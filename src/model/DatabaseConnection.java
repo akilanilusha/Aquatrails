@@ -99,4 +99,8 @@ public class DatabaseConnection {
             System.out.println("Connection close failed: " + e.getMessage());
         }
     }
+
+    public static DatabaseConnection getInstance() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
