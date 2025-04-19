@@ -209,9 +209,7 @@ public class LoginUser extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 dispose();
                 new Dashboard().setVisible(true);  // Show dashboard
-                rs.close();
-                ps.close();
-                conn.close();
+                
             } else {
                 // Credentials don't match
                 JOptionPane.showMessageDialog(this, "Invalid username, password, or role!", "Login Failed", JOptionPane.ERROR_MESSAGE);
