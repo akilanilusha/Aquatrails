@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="998b4113-8c5b-4a30-b917-ca21fb29eef5" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/build/classes/GUI/Dashboard$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/Dashboard$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/GUI/Dashboard$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/Dashboard$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/GUI/Dashboard$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/Dashboard$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/GUI/Dashboard$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/Dashboard$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/GUI/Dashboard.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/Dashboard.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/GUI/Dashboard.form" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/Dashboard.form" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nbproject/private/private.xml" beforeDir="false" afterPath="$PROJECT_DIR$/nbproject/private/private.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nbproject/project.properties" beforeDir="false" afterPath="$PROJECT_DIR$/nbproject/project.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Dashboard.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Dashboard.form" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Dashboard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Dashboard.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 6
+}]]></component>
+  <component name="ProjectId" id="2vxRqkJP9i9xtZdPxTj3w2ZQSwn" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "akila/code",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/akilanilusha/Desktop/desktop app java/AquaTrails"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="998b4113-8c5b-4a30-b917-ca21fb29eef5" name="Changes" comment="" />
+      <created>1745084932620</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1745084932620</updated>
+    </task>
+    <servers />
+  </component>
+</project>
