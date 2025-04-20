@@ -4,6 +4,8 @@
  */
 package GUI;
 
+import API.SeaConditionPanel;
+import GUI.components.BookingCard;
 import com.toedter.calendar.JDateChooser;
 import java.awt.CardLayout;
 import java.awt.GridLayout;
@@ -34,7 +36,10 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import model.DatabaseConnection;
 import java.sql.*;
-import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 
 /**
  *
@@ -62,6 +67,25 @@ public final class Dashboard extends javax.swing.JFrame {
         loadWeatherForecastList();
         loadBookingDetails();
 
+    }
+
+    private void loadBookingDetails() {
+        loadBookingCard.setLayout(new BoxLayout(loadBookingCard, BoxLayout.Y_AXIS));
+
+        loadBookingCard.addAncestorListener(new AncestorListener() {
+            @Override
+            public void ancestorAdded(AncestorEvent event) {
+                loadBookingCards();
+            }
+
+            @Override
+            public void ancestorRemoved(AncestorEvent event) {
+            }
+
+            @Override
+            public void ancestorMoved(AncestorEvent event) {
+            }
+        });
     }
 
     private void loadSeaConditionChart() {
@@ -174,7 +198,7 @@ public final class Dashboard extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        logoutButton = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -190,7 +214,7 @@ public final class Dashboard extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jButton6 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        bookingDetailsTable = new javax.swing.JTable();
+        loadBookingCard = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
 
@@ -210,7 +234,7 @@ public final class Dashboard extends javax.swing.JFrame {
             headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(headerLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 728, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 731, Short.MAX_VALUE)
                 .addGap(317, 317, 317))
         );
         headerLayout.setVerticalGroup(
@@ -244,10 +268,15 @@ public final class Dashboard extends javax.swing.JFrame {
             }
         });
 
-        jButton4.setBackground(new java.awt.Color(255, 102, 51));
-        jButton4.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
-        jButton4.setForeground(new java.awt.Color(255, 255, 255));
-        jButton4.setText("Log Out");
+        logoutButton.setBackground(new java.awt.Color(255, 102, 51));
+        logoutButton.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
+        logoutButton.setForeground(new java.awt.Color(255, 255, 255));
+        logoutButton.setText("Log Out");
+        logoutButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutButtonActionPerformed(evt);
+            }
+        });
 
         jButton5.setText("User Management");
 
@@ -258,7 +287,7 @@ public final class Dashboard extends javax.swing.JFrame {
             .addGroup(navbarLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(navbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                    .addComponent(logoutButton, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
                     .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
@@ -277,7 +306,7 @@ public final class Dashboard extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(logoutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(22, 22, 22))
         );
 
@@ -286,9 +315,12 @@ public final class Dashboard extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel2.setText("Dashboard");
 
+        weatherDetails.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+
         jLabel5.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jLabel5.setText("Weather Details");
 
+        weatherPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         weatherPanel.setViewportView(weatherScroller);
 
         javax.swing.GroupLayout weatherDetailsLayout = new javax.swing.GroupLayout(weatherDetails);
@@ -330,7 +362,7 @@ public final class Dashboard extends javax.swing.JFrame {
                     .addComponent(seeConditionChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(jLabel10)
-                        .addGap(0, 196, Short.MAX_VALUE)))
+                        .addGap(0, 197, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
@@ -386,8 +418,8 @@ public final class Dashboard extends javax.swing.JFrame {
         });
 
         jLabel3.setBackground(new java.awt.Color(0, 102, 255));
-        jLabel3.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setFont(new java.awt.Font("InaiMathi", 1, 36)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(0, 204, 204));
         jLabel3.setText("Booking");
 
         jButton6.setBackground(new java.awt.Color(0, 102, 255));
@@ -400,46 +432,22 @@ public final class Dashboard extends javax.swing.JFrame {
             }
         });
 
-        bookingDetailsTable.setAutoCreateRowSorter(true);
-        bookingDetailsTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                { new Integer(123), "222", "dfsdf", "dfsd",  new Double(32323.0), null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "Booking id", "Date", "Visitor Name", "Package", "Price", "Update", "Delete"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Object.class, java.lang.Object.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
-            };
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        bookingDetailsTable.setRowHeight(50);
-        bookingDetailsTable.setRowMargin(10);
-        bookingDetailsTable.getTableHeader().setReorderingAllowed(false);
-        bookingDetailsTable.addAncestorListener(new javax.swing.event.AncestorListener() {
+        loadBookingCard.setBackground(new java.awt.Color(204, 204, 204));
+        loadBookingCard.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        loadBookingCard.setForeground(new java.awt.Color(255, 255, 255));
+        loadBookingCard.addAncestorListener(new javax.swing.event.AncestorListener() {
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
-                bookingDetailsTableAncestorAdded(evt);
+                loadBookingCardAncestorAdded(evt);
             }
             public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
             }
             public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
             }
         });
-        jScrollPane1.setViewportView(bookingDetailsTable);
+        loadBookingCard.setLayout(new java.awt.BorderLayout());
+        jScrollPane1.setViewportView(loadBookingCard);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -447,14 +455,14 @@ public final class Dashboard extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGap(27, 27, 27)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 583, Short.MAX_VALUE)
+                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(24, 24, 24))
         );
         jPanel3Layout.setVerticalGroup(
@@ -464,9 +472,9 @@ public final class Dashboard extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addGap(7, 7, 7)
                 .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
-                .addGap(56, 56, 56))
+                .addGap(12, 12, 12)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jPanel4.setBackground(new java.awt.Color(204, 204, 0));
@@ -553,6 +561,7 @@ public final class Dashboard extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -632,9 +641,9 @@ public final class Dashboard extends javax.swing.JFrame {
                             + visitorName + "', '" + visitorId + "', '" + selectedPackage + "', " + price + ")";
 
                     DatabaseConnection.insertData(insertQuery);
-
                     JOptionPane.showMessageDialog(this, "Booking successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                    loadBookingDetails();
+                    loadBookingCards();
+
                 } catch (NumberFormatException e) {
                     JOptionPane.showMessageDialog(this, "Invalid price format!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -642,45 +651,60 @@ public final class Dashboard extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton6ActionPerformed
 
-    public void loadBookingDetails() {
 
-        DefaultTableModel model = (DefaultTableModel) bookingDetailsTable.getModel();
-        model.setRowCount(0); // clear existing rows
-        bookingDetailsTable.getColumn("Update").setCellRenderer(new ButtonRenderer("Update"));
-        bookingDetailsTable.getColumn("Update").setCellEditor(new ButtonEditor(new JCheckBox(), "Update"));
+    private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
+        // TODO add your handling code here:
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to logout?",
+                "Logout Confirmation",
+                JOptionPane.YES_NO_OPTION
+        );
 
-        bookingDetailsTable.getColumn("Delete").setCellRenderer(new ButtonRenderer("Delete"));
-        bookingDetailsTable.getColumn("Delete").setCellEditor(new ButtonEditor(new JCheckBox(), "Delete"));
+        if (confirm == JOptionPane.YES_OPTION) {
+            // Close the current frame
+            this.dispose();  // Directly dispose of the current frame
+
+            // Open the login frame
+            new LoginUser().setVisible(true);
+        }
+    }//GEN-LAST:event_logoutButtonActionPerformed
+
+    public void loadBookingCards() {
+        // Clear existing cards before adding new ones
+        loadBookingCard.removeAll();
+
         try {
+            // Fetch data from the database
             Connection conn = DatabaseConnection.getConnection();
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT booking_id, visit_date, visitor_name, package_name, price FROM booking");
+            ResultSet rs = stmt.executeQuery("SELECT booking_id, visitor_name, package_name, price FROM booking");
 
+            // Loop through the result set and create a card for each booking
             while (rs.next()) {
-                Object[] row = new Object[]{
-                    rs.getInt("booking_id"),
-                    rs.getDate("visit_date"),
-                    rs.getString("visitor_name"),
-                    rs.getString("package_name"),
-                    rs.getDouble("price"),
-                    "Update", // button label
-                    "Delete" // button label
-                };
-                model.addRow(row);
+                int bookingId = rs.getInt("booking_id");
+                String visitorName = rs.getString("visitor_name");
+                String packageName = rs.getString("package_name");
+                double price = rs.getDouble("price");
+
+                // Create a BookingCard for each record
+                BookingCard card = new BookingCard(bookingId, visitorName, packageName, price);
+
+                // Add the card to the panel
+                loadBookingCard.add(card);  // Add the card to the panel
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        // Renderer and Editor for Update
+        // Refresh the panel to show the newly added cards
+        loadBookingCard.revalidate();
+        loadBookingCard.repaint();
     }
-
-
-    private void bookingDetailsTableAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_bookingDetailsTableAncestorAdded
+    private void loadBookingCardAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_loadBookingCardAncestorAdded
         // TODO add your handling code here:
-        loadBookingDetails();
-    }//GEN-LAST:event_bookingDetailsTableAncestorAdded
+    }//GEN-LAST:event_loadBookingCardAncestorAdded
 
     private void fetchPackagesFromDatabase(JComboBox<String> packageComboBox) {
         // Database connection (Replace with your actual database credentials)
@@ -738,12 +762,10 @@ public final class Dashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable bookingDetailsTable;
     private javax.swing.JPanel header;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
@@ -759,6 +781,8 @@ public final class Dashboard extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel loadBookingCard;
+    private javax.swing.JButton logoutButton;
     private javax.swing.JPanel navbar;
     private javax.swing.JPanel seeConditionChart;
     private javax.swing.JPanel weatherDetails;

@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package GUI;
+package API;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jfree.chart.ChartFactory;
@@ -25,11 +25,11 @@ import java.util.List;
  */
 public class SeaConditionPanel extends JPanel {
 
-    private static final String API_KEY = "3631d5c4-1966-11f0-a906-0242ac130003-3631d61e-1966-11f0-a906-0242ac130003";  // Replace with your actual key
+    private static final String API_KEY = "3631d5c4-1966-11f0-a906-0242ac130003-3631d61e-1966-11f0-a906-0242ac130003";
     private static final String API_URL = "https://api.stormglass.io/v2/weather/point?lat=58.7984&lng=17.8081&params=waveHeight,waterTemperature";
 
     public SeaConditionPanel() {
-        setLayout(new GridLayout(2, 1)); // 2 rows: wave height + temperature
+        setLayout(new GridLayout(2, 1));
 
         List<String> times = new ArrayList<>();
         List<Double> waveHeights = new ArrayList<>();
@@ -56,7 +56,7 @@ public class SeaConditionPanel extends JPanel {
 
             for (int i = 0; i < hours.length(); i++) {
                 JSONObject hourData = hours.getJSONObject(i);
-                String time = hourData.getString("time").substring(11, 16); // e.g., "14:00"
+                String time = hourData.getString("time").substring(11, 16); //  "14:00"
 
                 if (hourData.has("waveHeight") && hourData.has("waterTemperature")) {
                     JSONObject waveHeight = hourData.getJSONObject("waveHeight");
