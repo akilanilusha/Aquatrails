@@ -51,8 +51,8 @@ public final class Dashboard extends javax.swing.JFrame {
      * Creates new form Dashboard
      */
     private CardLayout cardLayout;
-    private static final Logger LOGGER = Logger.getLogger(Dashboard.class.getName()); // Logger for error handling
-    private String apiKey = "bba3a0c3b05e5455d102a635e22d80e7"; // Important:  Replace with your actual API key here.
+    private static final Logger LOGGER = Logger.getLogger(Dashboard.class.getName()); 
+    private String apiKey = "ADD_OPEWHETHERMAP API"; // API key here.
 
     public Dashboard() {
         initComponents();
