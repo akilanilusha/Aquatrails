@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="AquaTrails:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/AquaTrails_jar</output-path>
+    <root id="archive" name="AquaTrails_jar.jar">
+      <element id="module-output" name="AquaTrails" />
+    </root>
+  </artifact>
+</component>

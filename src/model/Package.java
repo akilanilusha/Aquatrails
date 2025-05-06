@@ -16,7 +16,7 @@ public class Package {
         public void fetchPackagesFromDatabase(JComboBox<String> packageComboBox) {
         // Database connection (Replace with your actual database credentials)
 
-        String query = "SELECT package_name FROM package"; // Adjust table and column names if necessary
+        String query = "SELECT package_name FROM packages"; // Adjust table and column names if necessary
         ResultSet rs = DatabaseConnection.searchData(query);
 
         try {

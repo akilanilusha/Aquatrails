@@ -4,9 +4,15 @@
  */
 package GUI;
 
+import com.formdev.flatlaf.FlatIntelliJLaf;
+import java.awt.Image;
 import javax.swing.JOptionPane;
 import model.DatabaseConnection;
 import java.sql.*;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 
 /**
  *
@@ -19,6 +25,8 @@ public class LoginUser extends javax.swing.JFrame {
      */
     public LoginUser() {
         initComponents();
+        
+
     }
 
     /**
@@ -34,7 +42,8 @@ public class LoginUser extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        createUser = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         username = new javax.swing.JTextField();
@@ -53,30 +62,27 @@ public class LoginUser extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Hussar", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("WELCOME ");
-        jPanel5.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 70, -1, -1));
+        jPanel5.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 210, -1, -1));
 
         jLabel2.setFont(new java.awt.Font("Hussar", 1, 24)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("AQUATRAILS");
-        jPanel5.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 120, -1, -1));
+        jLabel2.setText("HOTEL MANAGEMENT");
+        jPanel5.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 330, -1, -1));
 
-        createUser.setBackground(new java.awt.Color(0, 204, 102));
-        createUser.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
-        createUser.setForeground(new java.awt.Color(255, 255, 255));
-        createUser.setText("Create User");
-        createUser.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 3, true));
-        createUser.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                createUserActionPerformed(evt);
-            }
-        });
-        jPanel5.add(createUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 390, 170, 40));
+        jLabel8.setFont(new java.awt.Font("Hussar", 1, 36)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel8.setText("AQUATRAILS");
+        jPanel5.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 260, -1, -1));
+
+        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/patternbg.jpg"))); // NOI18N
+        jLabel6.setText("jLabel6");
+        jPanel5.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 360, 540));
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel3.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(0, 204, 51));
+        jLabel3.setForeground(new java.awt.Color(0, 51, 204));
         jLabel3.setText("LOGIN");
         jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 90, -1, -1));
 
@@ -114,7 +120,7 @@ public class LoginUser extends javax.swing.JFrame {
         jLabel7.setText("password");
         jPanel3.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 230, -1, -1));
 
-        loginUser.setBackground(new java.awt.Color(0, 204, 51));
+        loginUser.setBackground(new java.awt.Color(0, 0, 153));
         loginUser.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
         loginUser.setForeground(new java.awt.Color(255, 255, 255));
         loginUser.setText("Login");
@@ -192,8 +198,8 @@ public class LoginUser extends javax.swing.JFrame {
             return;
         }
 
-        // SQL to verify credentials
-        String query = "SELECT * FROM user WHERE username = ? AND password = ? AND userRole = ?";
+        // SQL to verify credentials and ensure user is active
+        String query = "SELECT * FROM user WHERE username = ? AND password = ? AND user_role = ? AND status = 'Active'";
 
         try {
             Connection conn = DatabaseConnection.getConnection();
@@ -205,28 +211,18 @@ public class LoginUser extends javax.swing.JFrame {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                // Credentials match, redirect to Dashboard
+                // Credentials and status match
                 JOptionPane.showMessageDialog(this, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 dispose();
-                new Dashboard().setVisible(true);  // Show dashboard
-                
+                new Dashboard().setVisible(true);
             } else {
-                // Credentials don't match
-                JOptionPane.showMessageDialog(this, "Invalid username, password, or role!", "Login Failed", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Invalid credentials or account not active!", "Login Failed", JOptionPane.ERROR_MESSAGE);
             }
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error while logging in: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-
-        // Optionally, clear fields after successful user creation
     }//GEN-LAST:event_loginUserActionPerformed
-
-    private void createUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createUserActionPerformed
-        // TODO add your handling code here:
-        this.dispose();
-        new CreateUser().setVisible(true);
-    }//GEN-LAST:event_createUserActionPerformed
 
     /**
      * @param args the command line arguments
@@ -237,22 +233,15 @@ public class LoginUser extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(LoginUser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(LoginUser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(LoginUser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(LoginUser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            try {
+            UIManager.setLookAndFeel(new FlatIntelliJLaf());
+        } catch (Exception ex) { 
+            ex.printStackTrace();
         }
+        //</editor-fold>
+
+        DatabaseConnection.createDatabase();
+
         //</editor-fold>
 
         /* Create and display the form */
@@ -264,13 +253,14 @@ public class LoginUser extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton createUser;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
