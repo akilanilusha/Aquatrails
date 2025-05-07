@@ -33,7 +33,7 @@ public class WeatherApp {
 
     private static void loadWeatherForecast() {
         try {
-            String API_KEY = "bba3a0c3b05e5455d102a635e22d80e7"; // Replace with your real API key
+            String API_KEY = ""; // Replace with your real API key
             String urlString = "https://api.openweathermap.org/data/2.5/forecast?q=Colombo&units=metric&appid=" + API_KEY;
 
             URL url = new URL(urlString);
