@@ -4,29 +4,23 @@
  */
 package GUI;
 
+import GUI.components.booking.BookinButtonAction;
 import API.SeaConditionPanel;
+import static EnvironMentalVariable.EnvironMentalVariable.Location;
+import static EnvironMentalVariable.EnvironMentalVariable.openWeather_api;
 import GUI.components.booking.BookingCardRow;
+import GUI.components.guiders.AddGuiderButton;
 import GUI.components.guiders.GuiderCardRow;
+import GUI.components.packge.AddPackageButton;
 import GUI.components.packge.PackageCardRow;
+import GUI.components.user.AddUserButton;
 import GUI.components.user.UserCardRow;
-import com.toedter.calendar.JDateChooser;
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Insets;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.file.Files;
 
 import java.util.Date;
 import javax.swing.BorderFactory;
@@ -41,24 +35,12 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JTextField;
+
 import javax.swing.table.DefaultTableModel;
 import model.DatabaseConnection;
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
-import java.util.Base64;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
@@ -75,13 +57,38 @@ public final class Dashboard extends javax.swing.JFrame {
      * Creates new form Dashboard
      */
     private final CardLayout cardLayout;
-    // Logger for error handling
-    private final String apiKey = "bba3a0c3b05e5455d102a635e22d80e7"; // Important:  Replace with your actual API key here.
+    private final String apiKey = openWeather_api;
+
+    private int userId;
 
     public Dashboard() {
         initComponents();
 
         cardLayout = new CardLayout();
+        initilization(cardLayout);
+
+    }
+
+    public Dashboard(int logUserID) throws SQLException {
+        initComponents();
+        cardLayout = new CardLayout();
+
+        ResultSet rs = DatabaseConnection.searchData("SELECT username, user_role FROM user WHERE user_id = " + logUserID);
+        if (rs != null && rs.next()) {
+            String username = rs.getString("username");
+            String role = rs.getString("user_role");
+            logedUserName.setText(username);
+
+        } else {
+            logedUserName.setText("");
+
+        }
+
+        System.out.println(logUserID);
+        initilization(cardLayout);
+    }
+
+    private void initilization(CardLayout cardLayout) {
         jPanel6.setLayout(cardLayout);
 
         jPanel6.add(jPanel2, "dashboard");
@@ -108,7 +115,6 @@ public final class Dashboard extends javax.swing.JFrame {
         try {
             if (rsb != null && rsb.next()) {
                 int count = rsb.getInt("count");
-                System.out.println(count);
                 todaybooking.setText(String.valueOf(count));
             } else {
                 todaybooking.setText("0");
@@ -248,23 +254,21 @@ public final class Dashboard extends javax.swing.JFrame {
         try {
             Connection conn = DatabaseConnection.getConnection();
             Statement stmt = conn.createStatement();
-            // Include 'status' in the query
             ResultSet rs = stmt.executeQuery(
                     "SELECT booking_id, visitor_name, package_name, price, status, visit_date "
                     + "FROM booking "
-                    + "WHERE status != 'confirmed' "
-                    + "ORDER BY visit_date DESC"
+                    + "ORDER BY visit_date ASC"
             );
+
             while (rs.next()) {
                 int bookingId = rs.getInt("booking_id");
                 String visitorName = rs.getString("visitor_name");
                 String packageName = rs.getString("package_name");
                 double price = rs.getDouble("price");
-                String status = rs.getString("status"); // Fetch status
+                String bookingDate = rs.getString("visit_date");
+                String status = rs.getString("status");
 
-                // Pass the status to the CardRow constructor
-                BookingCardRow card = new BookingCardRow(bookingId, visitorName, packageName, price, status);
-
+                BookingCardRow card = new BookingCardRow(bookingId, visitorName, packageName, price, status, bookingDate);
                 loadBookingCard.add(card);
             }
 
@@ -324,7 +328,6 @@ public final class Dashboard extends javax.swing.JFrame {
                 boolean isActive = rs.getBoolean("is_active");
                 String imageBase64 = rs.getString("image_base64");
 
-           
                 GuiderCardRow card = new GuiderCardRow(guiderId, name, age, location, packageName, isActive, imageBase64);
                 loadGuiderCard.add(card);
             }
@@ -340,7 +343,6 @@ public final class Dashboard extends javax.swing.JFrame {
     private void loadSeaConditionChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-        // Sample data (you can dynamically load this from database or API later)
         dataset.addValue(1.2, "Wave Height (m)", "08:00");
         dataset.addValue(1.5, "Wave Height (m)", "10:00");
         dataset.addValue(1.0, "Wave Height (m)", "12:00");
@@ -353,16 +355,7 @@ public final class Dashboard extends javax.swing.JFrame {
                 dataset
         );
 
-//        SeaConditionPanel seaConditionPanel = new SeaConditionPanel();
-//
-//        // Make sure to add the seaConditionPanel to the jPanel6 (which uses CardLayout)
-//        seeConditionChart.setLayout(new java.awt.BorderLayout());
-//        seeConditionChart.add(seaConditionPanel, BorderLayout.CENTER); // Adding the chart to the panel
-//        jPanel6.add(seeConditionChart, "seaConditionChart"); // Add the seaConditionChart panel to the CardLayout
-//        cardLayout.show(jPanel6, "seaConditionChart"); //
         SeaConditionPanel chartPanel = new SeaConditionPanel();
-//        ChartPanel chartPanel = new ChartPanel(lineChart);
-//        chartPanel.setPreferredSize(new java.awt.Dimension(380, 160)); // Adjust to fit your panel
 
         seeConditionChart.removeAll(); // Clear previous chart if any
         seeConditionChart.add(chartPanel, java.awt.BorderLayout.CENTER);
@@ -370,16 +363,10 @@ public final class Dashboard extends javax.swing.JFrame {
     }
 
     private void loadWeatherForecastList() {
-        new Thread(() -> { // Perform network operation in a separate thread
+        new Thread(() -> {
             try {
-                if (apiKey.equals("YOUR_API_KEY")) {
-                    SwingUtilities.invokeLater(() -> {
-                        JOptionPane.showMessageDialog(this, "Please enter a valid OpenWeatherMap API key.", "API Key Required", JOptionPane.ERROR_MESSAGE);
-                    });
-                    return; // Stop execution if API key is missing
-                }
 
-                String city = "Colombo";
+                String city = Location;
                 String urlString = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&units=metric&appid=" + apiKey;
 
                 URL url = new URL(urlString);
@@ -394,8 +381,8 @@ public final class Dashboard extends javax.swing.JFrame {
                 }
                 reader.close();
 
-                String jsonResponse = json.toString(); // Store the raw JSON
-                //LOGGER.log(Level.INFO, "Weather API Response: {0}", jsonResponse); // Log the response
+                String jsonResponse = json.toString();
+                //LOGGER.log(Level.INFO, "Weather API Response: {0}", jsonResponse);
 
                 JSONObject jsonObj = new JSONObject(jsonResponse);
                 JSONArray list = jsonObj.getJSONArray("list");
@@ -417,7 +404,7 @@ public final class Dashboard extends javax.swing.JFrame {
                     forecastListPanel.add(label);
                 }
 
-                SwingUtilities.invokeLater(() -> { // Update the UI on the EDT
+                SwingUtilities.invokeLater(() -> {
                     weatherPanel.setViewportView(forecastListPanel);
                 });
 
@@ -447,13 +434,11 @@ public final class Dashboard extends javax.swing.JFrame {
                 String email = rs.getString("email");
                 String status = rs.getString("status");
 
-                // Assuming UserCardRow constructor accepts these parameters
                 UserCardRow card = new UserCardRow(userId, username, role, nic, email, status);
                 loadUserCard.add(card);
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
 
         loadUserCard.revalidate();
@@ -472,6 +457,8 @@ public final class Dashboard extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         header = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jPanel9 = new javax.swing.JPanel();
+        logedUserName = new javax.swing.JLabel();
         navbar = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -531,6 +518,30 @@ public final class Dashboard extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("AQUATRAILS HOTEL MANAGEMENT SYSYTEM");
 
+        jPanel9.setBackground(new java.awt.Color(0, 0, 51));
+
+        logedUserName.setFont(new java.awt.Font("Helvetica Neue", 3, 18)); // NOI18N
+        logedUserName.setForeground(new java.awt.Color(255, 255, 255));
+        logedUserName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        logedUserName.setText("asdasd");
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                .addContainerGap(198, Short.MAX_VALUE)
+                .addComponent(logedUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addComponent(logedUserName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(34, 34, 34))
+        );
+
         javax.swing.GroupLayout headerLayout = new javax.swing.GroupLayout(header);
         header.setLayout(headerLayout);
         headerLayout.setHorizontalGroup(
@@ -538,13 +549,20 @@ public final class Dashboard extends javax.swing.JFrame {
             .addGroup(headerLayout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(552, 552, 552))
+                .addGap(141, 141, 141)
+                .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         headerLayout.setVerticalGroup(
             headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headerLayout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(headerLayout.createSequentialGroup()
+                .addGroup(headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headerLayout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(headerLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -642,7 +660,7 @@ public final class Dashboard extends javax.swing.JFrame {
                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
                 .addComponent(logoutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(22, 22, 22))
         );
@@ -768,15 +786,12 @@ public final class Dashboard extends javax.swing.JFrame {
         Datetime.setLayout(DatetimeLayout);
         DatetimeLayout.setHorizontalGroup(
             DatetimeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(DatetimeLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DatetimeLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(DatetimeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DatetimeLayout.createSequentialGroup()
-                        .addComponent(Date, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(43, 43, 43))
-                    .addGroup(DatetimeLayout.createSequentialGroup()
-                        .addComponent(Time, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())))
+                .addGroup(DatetimeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(Time, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Date, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(43, 43, 43))
         );
         DatetimeLayout.setVerticalGroup(
             DatetimeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1062,9 +1077,7 @@ public final class Dashboard extends javax.swing.JFrame {
                 .addGap(21, 21, 21)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(newUser, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(newUser, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19))
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
@@ -1193,71 +1206,8 @@ public final class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_jPanel3AncestorAdded
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
-        JDateChooser dateChooser = new JDateChooser();
-        JTextField visitorNameField = new JTextField();
-        JTextField visitorIdField = new JTextField();
-        JComboBox<String> packageComboBox = new JComboBox<>();
-        JTextField priceField = new JTextField();
-        JComboBox<String> statusComboBox = new JComboBox<>(new String[]{"confirmed", "cancelled", "ongoing"});
+        BookinButtonAction.showBookingDialog(this);
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(6, 2)); // Adjusted for 6 fields
-
-        panel.add(new JLabel("Select Date:"));
-        panel.add(dateChooser);
-
-        panel.add(new JLabel("Visitor Name:"));
-        panel.add(visitorNameField);
-
-        panel.add(new JLabel("Visitor ID:"));
-        panel.add(visitorIdField);
-
-        panel.add(new JLabel("Select Package:"));
-        panel.add(packageComboBox);
-
-        panel.add(new JLabel("Price:"));
-        panel.add(priceField);
-
-        panel.add(new JLabel("Status:"));
-        panel.add(statusComboBox);
-
-        // Fetch packages from the database
-        fetchPackagesFromDatabase(packageComboBox);
-
-        JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-        JDialog dialog = optionPane.createDialog(this, "New Booking");
-
-        dialog.setSize(500, 350);
-        dialog.setVisible(true);
-
-        if (optionPane.getValue() != null && optionPane.getValue().equals(JOptionPane.OK_OPTION)) {
-            Date selectedDate = dateChooser.getDate();
-            String visitorName = visitorNameField.getText();
-            String visitorId = visitorIdField.getText();
-            String selectedPackage = (String) packageComboBox.getSelectedItem();
-            String priceText = priceField.getText();
-            String status = (String) statusComboBox.getSelectedItem();
-
-            if (selectedDate == null || visitorName.isEmpty() || visitorId.isEmpty() || selectedPackage == null || priceText.isEmpty() || status == null) {
-                JOptionPane.showMessageDialog(this, "Please fill all fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                try {
-                    double price = Double.parseDouble(priceText);
-
-                    String insertQuery = "INSERT INTO booking (visit_date, visitor_name, visitor_id, package_name, price, status) "
-                            + "VALUES ('" + new java.sql.Date(selectedDate.getTime()) + "', '"
-                            + visitorName + "', '" + visitorId + "', '" + selectedPackage + "', " + price + ", '" + status + "')";
-
-                    DatabaseConnection.insertData(insertQuery);
-                    JOptionPane.showMessageDialog(this, "Booking successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                    loadBookingCards();
-
-                } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(this, "Invalid price format!", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        }
     }//GEN-LAST:event_jButton6ActionPerformed
 
 
@@ -1285,76 +1235,8 @@ public final class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_loadBookingCardAncestorAdded
 
     private void newPackageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPackageActionPerformed
-        // TODO add your handling code here:
+        AddPackageButton.showPackageDialog(this);
 
-        JTextField packageCodeField = new JTextField();
-        JTextField packageNameField = new JTextField();
-        JTextArea packageDescriptionArea = new JTextArea(5, 30); // Increase rows to 5 and columns to 30
-        packageDescriptionArea.setLineWrap(true);
-        packageDescriptionArea.setWrapStyleWord(true);
-        JScrollPane descriptionScroll = new JScrollPane(packageDescriptionArea);
-        JTextField locationField = new JTextField();
-        JTextField priceField = new JTextField();
-
-        String[] statuses = {"Active", "Pending", "Closed"};
-        JComboBox<String> statusComboBox = new JComboBox<>(statuses);
-
-        JPanel panel = new JPanel(new GridLayout(6, 2, 5, 5));
-        panel.add(new JLabel("Package Code:"));
-        panel.add(packageCodeField);
-
-        panel.add(new JLabel("Package Name:"));
-        panel.add(packageNameField);
-
-        panel.add(new JLabel("Description:"));
-        panel.add(descriptionScroll);
-
-        panel.add(new JLabel("Location:"));
-        panel.add(locationField);
-
-        panel.add(new JLabel("Price:"));
-        panel.add(priceField);
-
-        panel.add(new JLabel("Status:"));
-        panel.add(statusComboBox);
-
-        JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-        JDialog dialog = optionPane.createDialog(this, "Add New Package");
-
-        dialog.setSize(500, 350);
-        dialog.setVisible(true);
-
-        if (optionPane.getValue() != null && optionPane.getValue().equals(JOptionPane.OK_OPTION)) {
-            String code = packageCodeField.getText();
-            String name = packageNameField.getText();
-            String description = packageDescriptionArea.getText();
-            String location = locationField.getText();
-            String priceText = priceField.getText();
-            String status = (String) statusComboBox.getSelectedItem();
-
-            // Validation
-            if (code.isEmpty() || name.isEmpty() || description.isEmpty() || location.isEmpty() || priceText.isEmpty() || status == null) {
-                JOptionPane.showMessageDialog(this, "Please fill all fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                try {
-                    double price = Double.parseDouble(priceText);
-
-                    String insertQuery = "INSERT INTO packages (package_code, package_name, description, location, price, status) VALUES ('"
-                            + code + "', '"
-                            + name + "', '"
-                            + description + "', '"
-                            + location + "', "
-                            + price + ", '"
-                            + status + "')";
-
-                    DatabaseConnection.insertData(insertQuery);
-                    JOptionPane.showMessageDialog(this, "Package added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                    loadPackageCards();
-                } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(this, "Invalid price format!", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        }
     }//GEN-LAST:event_newPackageActionPerformed
 
     private void loadPackageCardAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_loadPackageCardAncestorAdded
@@ -1362,119 +1244,7 @@ public final class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_loadPackageCardAncestorAdded
 
     private void newGuideActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newGuideActionPerformed
-        // TODO add your handling code here:
-        JTextField nameField = new JTextField();
-        nameField.setPreferredSize(new Dimension(200, 40)); // Increase height
-
-        JDateChooser dateChooser = new JDateChooser();
-        dateChooser.setDateFormatString("yyyy-MM-dd");
-
-        JTextField locationField = new JTextField(20);
-        JComboBox<String> packageComboBox = new JComboBox<>();
-        JCheckBox activeCheckbox = new JCheckBox("Is Active", true);
-
-        // Load packages into combo box
-        try {
-            ResultSet rs = DatabaseConnection.getConnection().createStatement().executeQuery("SELECT package_name FROM packages");
-            while (rs.next()) {
-                packageComboBox.addItem(rs.getString("package_name"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        // Image upload and preview
-        JLabel imagePreviewLabel = new JLabel();
-        imagePreviewLabel.setPreferredSize(new Dimension(150, 150));
-        imagePreviewLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        final String[] imageBase64 = {null};
-
-        JButton uploadButton = new JButton("Upload Image");
-        uploadButton.addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser();
-            int option = fileChooser.showOpenDialog(null);
-            if (option == JFileChooser.APPROVE_OPTION) {
-                File file = fileChooser.getSelectedFile();
-                try {
-                    byte[] imageBytes = Files.readAllBytes(file.toPath());
-                    imageBase64[0] = Base64.getEncoder().encodeToString(imageBytes);
-
-                    ImageIcon icon = new ImageIcon(imageBytes);
-                    Image scaled = icon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
-                    imagePreviewLabel.setIcon(new ImageIcon(scaled));
-
-                    JOptionPane.showMessageDialog(null, "Image uploaded successfully!");
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(null, "Failed to read image!", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
-
-        // Input panel
-        JPanel inputPanel = new JPanel(new GridLayout(6, 2, 5, 5));
-        inputPanel.add(new JLabel("Name:"));
-        inputPanel.add(nameField);
-
-        inputPanel.add(new JLabel("Date of Birth:"));
-        inputPanel.add(dateChooser);
-
-        inputPanel.add(new JLabel("Location:"));
-        inputPanel.add(locationField);
-
-        inputPanel.add(new JLabel("Package:"));
-        inputPanel.add(packageComboBox);
-
-        inputPanel.add(new JLabel("Active:"));
-        inputPanel.add(activeCheckbox);
-
-        inputPanel.add(new JLabel("Image:"));
-        inputPanel.add(uploadButton);
-
-        JPanel imagePanel = new JPanel();
-        imagePanel.add(imagePreviewLabel);
-
-        JPanel combinedPanel = new JPanel(new BorderLayout(10, 10));
-        combinedPanel.add(inputPanel, BorderLayout.NORTH);
-        combinedPanel.add(imagePanel, BorderLayout.CENTER);
-
-        JOptionPane optionPane = new JOptionPane(combinedPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-        JDialog dialog = optionPane.createDialog(this, "Add New Guider");
-
-        dialog.setSize(600, 600);
-        dialog.setVisible(true);
-
-        if (optionPane.getValue() != null && optionPane.getValue().equals(JOptionPane.OK_OPTION)) {
-            String name = nameField.getText();
-            Date selectedDate = dateChooser.getDate();
-            String location = locationField.getText();
-            String packageName = (String) packageComboBox.getSelectedItem();
-            boolean isActive = activeCheckbox.isSelected();
-
-            if (name.isEmpty() || selectedDate == null || location.isEmpty() || packageName == null) {
-                JOptionPane.showMessageDialog(this, "Please fill all required fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                try {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    String dob = sdf.format(selectedDate);
-
-                    String insertQuery = "INSERT INTO guider (name, date_of_birth, location, package_name, is_active, image_base64) VALUES ('"
-                            + name + "', '"
-                            + dob + "', '"
-                            + location + "', '"
-                            + packageName + "', "
-                            + (isActive ? "TRUE" : "FALSE") + ", "
-                            + (imageBase64[0] != null ? ("'" + imageBase64[0] + "'") : "NULL") + ")";
-
-                    DatabaseConnection.insertData(insertQuery);
-                    JOptionPane.showMessageDialog(this, "Guider added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                    loadGuiderCards();
-
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Error saving guider.", "Database Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        }
+        AddGuiderButton.showGuiderDialog(this);
     }//GEN-LAST:event_newGuideActionPerformed
 
     private void loadGuiderCardAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_loadGuiderCardAncestorAdded
@@ -1482,96 +1252,7 @@ public final class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_loadGuiderCardAncestorAdded
 
     private void newUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newUserActionPerformed
-
-        Font inputFont = new Font("SansSerif", Font.PLAIN, 16);
-        Dimension fieldSize = new Dimension(250, 40); // Taller fields
-
-        JTextField usernameField = new JTextField();
-        usernameField.setPreferredSize(fieldSize);
-        usernameField.setFont(inputFont);
-
-        JPasswordField passwordField = new JPasswordField();
-        passwordField.setPreferredSize(fieldSize);
-        passwordField.setFont(inputFont);
-
-        JTextField nicField = new JTextField();
-        nicField.setPreferredSize(fieldSize);
-        nicField.setFont(inputFont);
-
-        JTextField emailField = new JTextField();
-        emailField.setPreferredSize(fieldSize);
-        emailField.setFont(inputFont);
-
-        String[] roles = {
-            "Administrator", "Receptionist", "Hotel Manager", "Guest", "Maintenance Staff"
-        };
-        JComboBox<String> roleComboBox = new JComboBox<>(roles);
-        roleComboBox.setPreferredSize(fieldSize);
-        roleComboBox.setFont(inputFont);
-
-        String[] statusOptions = {"Active", "Leave", "Suspended"};
-        JComboBox<String> statusComboBox = new JComboBox<>(statusOptions);
-        statusComboBox.setPreferredSize(fieldSize);
-        statusComboBox.setFont(inputFont);
-
-        JPanel inputPanel = new JPanel(new GridLayout(6, 2, 10, 10));
-        inputPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-        inputPanel.add(new JLabel("Username:"));
-        inputPanel.add(usernameField);
-
-        inputPanel.add(new JLabel("Password:"));
-        inputPanel.add(passwordField);
-
-        inputPanel.add(new JLabel("NIC:"));
-        inputPanel.add(nicField);
-
-        inputPanel.add(new JLabel("Email:"));
-        inputPanel.add(emailField);
-
-        inputPanel.add(new JLabel("Role:"));
-        inputPanel.add(roleComboBox);
-
-        inputPanel.add(new JLabel("Status:"));
-        inputPanel.add(statusComboBox);
-
-        JOptionPane optionPane = new JOptionPane(inputPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-        JDialog dialog = optionPane.createDialog(this, "Add New User");
-        dialog.setSize(600, 400);
-        dialog.setVisible(true);
-
-        if (optionPane.getValue() != null && optionPane.getValue().equals(JOptionPane.OK_OPTION)) {
-            String username = usernameField.getText();
-            String password = new String(passwordField.getPassword());
-            String nic = nicField.getText();
-            String email = emailField.getText();
-            String role = (String) roleComboBox.getSelectedItem();
-            String status = (String) statusComboBox.getSelectedItem();
-
-            if (username.isEmpty() || password.isEmpty() || nic.isEmpty() || email.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please fill all required fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                try {
-                    String insertQuery = "INSERT INTO user (username, password, user_role, nic, email, status) VALUES ('"
-                            + username + "', '"
-                            + password + "', '"
-                            + role + "', '"
-                            + nic + "', '"
-                            + email + "', '"
-                            + status + "')";
-
-                    DatabaseConnection.insertData(insertQuery);
-                    JOptionPane.showMessageDialog(this, "User added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                    loadUserCards();
-
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Error saving user.", "Database Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        }
-
-
+        AddUserButton.showUserDialog(this);
     }//GEN-LAST:event_newUserActionPerformed
 
     private void loadUserCardAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_loadUserCardAncestorAdded
@@ -1584,6 +1265,7 @@ public final class Dashboard extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         String inputKey = JOptionPane.showInputDialog(this, "Enter access key to continue:");
         String validKey = "abc";
@@ -1603,25 +1285,6 @@ public final class Dashboard extends javax.swing.JFrame {
         // TODO add your handling code here:
 
     }//GEN-LAST:event_todaybookingAncestorAdded
-
-    private void fetchPackagesFromDatabase(JComboBox<String> packageComboBox) {
-
-        String query = "SELECT package_name FROM packages";
-        ResultSet rs = DatabaseConnection.searchData(query);
-
-        try {
-            if (rs != null) {
-                while (rs.next()) {
-                    String packageName = rs.getString("package_name");
-                    packageComboBox.addItem(packageName);
-//                    System.out.println(packageName);
-                }
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error fetching packages: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
-        }
-
-    }
 
     /**
      * @param args the command line arguments
@@ -1691,6 +1354,7 @@ public final class Dashboard extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -1699,6 +1363,7 @@ public final class Dashboard extends javax.swing.JFrame {
     private javax.swing.JPanel loadGuiderCard;
     private javax.swing.JPanel loadPackageCard;
     private javax.swing.JPanel loadUserCard;
+    private javax.swing.JLabel logedUserName;
     private javax.swing.JButton logoutButton;
     private javax.swing.JPanel navbar;
     private javax.swing.JButton newGuide;

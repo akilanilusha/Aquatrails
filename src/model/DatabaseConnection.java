@@ -1,6 +1,11 @@
 package model;
+
 import java.sql.*;
 
+/**
+ *
+ * @author akilanilusha
+ */
 public class DatabaseConnection {
 
     // Database credentials and settings
@@ -13,23 +18,19 @@ public class DatabaseConnection {
 
     // Get the database connection
     public static Connection getConnection() {
-        if (connection == null) {
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                connection = DriverManager.getConnection(URL, USER, PASSWORD);
-                System.out.println("Connected to database: " + DATABASE_NAME);
-            } catch (Exception e) {
-                System.out.println("Connection Error: " + e.getMessage());
-            }
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            return DriverManager.getConnection(URL, USER, PASSWORD);
+        } catch (Exception e) {
+            System.out.println("Connection Error: " + e.getMessage());
+            return null;
         }
-        return connection;
     }
 
     // Create the AquaTrails database if it doesn't exist
     public static void createDatabase() {
         String createDbQuery = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME;
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/", USER, PASSWORD);
-             Statement stmt = conn.createStatement()) {
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/", USER, PASSWORD); Statement stmt = conn.createStatement()) {
             stmt.executeUpdate(createDbQuery);
             System.out.println("Database '" + DATABASE_NAME + "' created or already exists.");
         } catch (SQLException e) {

@@ -4,6 +4,10 @@ import model.DatabaseConnection;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ *
+ * @author akilanilusha
+ */
 public class PackageCardRow extends JPanel {
 
     private JLabel packageIdLabel;
@@ -17,7 +21,7 @@ public class PackageCardRow extends JPanel {
     private JButton deleteButton;
 
     public PackageCardRow(int packageId, String packageCode, String packageName,
-                          String description, String location, double price, String status) {
+            String description, String location, double price, String status) {
 
         setLayout(new GridLayout(1, 8, 10, 0)); // 1 row, 8 columns
         setPreferredSize(new Dimension(900, 50));
@@ -48,10 +52,8 @@ public class PackageCardRow extends JPanel {
         add(updateButton);
         add(deleteButton);
 
-        // Set initial color for status
         updateStatusLabelColor(status);
 
-        // Update button action
         updateButton.addActionListener(e -> {
             JTextField nameField = new JTextField(packageName);
             JTextField descriptionField = new JTextField(description);
@@ -106,15 +108,12 @@ public class PackageCardRow extends JPanel {
 
                     DatabaseConnection.updateData(updateQuery);
 
-                    // Update UI after successful update
                     packageNameLabel.setText(newName);
                     descriptionLabel.setText(newDesc);
                     locationLabel.setText(newLocation);
                     priceLabel.setText("$" + newPrice);
                     statusLabel.setText(newStatus);
-                    updateStatusLabelColor(newStatus); // Update color
-                    
-                    
+                    updateStatusLabelColor(newStatus);
 
                     JOptionPane.showMessageDialog(this, "Package updated successfully!");
                 } catch (NumberFormatException ex) {
@@ -123,9 +122,18 @@ public class PackageCardRow extends JPanel {
             }
         });
 
-        // Delete button action
         deleteButton.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(this, "Delete Package ID: " + packageId + "?");
+            int confirm = JOptionPane.showOptionDialog(
+                    this,
+                    "Delete Package ID: " + packageId + "?",
+                    "Confirm Delete",
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    new Object[]{"Yes", "Cancel"},
+                    "Cancel"
+            );
+
             if (confirm == JOptionPane.YES_OPTION) {
                 String deleteQuery = "DELETE FROM packages WHERE package_id = " + packageId;
                 DatabaseConnection.deleteData(deleteQuery);
@@ -142,14 +150,12 @@ public class PackageCardRow extends JPanel {
         });
     }
 
-    // Helper: Create centered label
     private JLabel createCenteredLabel(String text, Font font) {
         JLabel label = new JLabel(text, SwingConstants.CENTER);
         label.setFont(font);
         return label;
     }
 
-    // Helper: Create styled button
     private JButton createStyledButton(String text, Color bgColor) {
         JButton button = new JButton(text);
         button.setBackground(bgColor);
@@ -158,7 +164,6 @@ public class PackageCardRow extends JPanel {
         return button;
     }
 
-    // Helper: Update status label color
     private void updateStatusLabelColor(String status) {
         switch (status) {
             case "Active" -> {

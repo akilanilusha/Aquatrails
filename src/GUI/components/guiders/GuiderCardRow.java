@@ -1,3 +1,8 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
+
 package GUI.components.guiders;
 
 import model.DatabaseConnection;
@@ -5,6 +10,12 @@ import model.DatabaseConnection;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Base64;
+
+
+/**
+ *
+ * @author akilanilusha
+ */
 
 public class GuiderCardRow extends JPanel {
 
@@ -150,7 +161,7 @@ public class GuiderCardRow extends JPanel {
         JTextField ageField = new JTextField(String.valueOf(age));
         JTextField locationField = new JTextField(location);
         JComboBox<String> packageComboBox = new JComboBox<>();
-        new model.Package().fetchPackagesFromDatabase(packageComboBox);
+        new model.LoadPackage().fetchPackagesFromDatabase(packageComboBox);
         packageComboBox.setSelectedItem(packageName); // Ensure correct item selected
 
         JCheckBox activeBox = new JCheckBox("Active", isActive);
@@ -178,7 +189,7 @@ public class GuiderCardRow extends JPanel {
                 String newName = nameField.getText();
                 int newAge = Integer.parseInt(ageField.getText());
                 String newLocation = locationField.getText();
-                String newPackage = (String) packageComboBox.getSelectedItem(); // ✅ FIXED
+                String newPackage = (String) packageComboBox.getSelectedItem(); 
                 boolean newStatus = activeBox.isSelected();
 
                 String sql = "UPDATE guider SET name='" + newName + "', location='" + newLocation

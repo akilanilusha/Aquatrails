@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package API;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,7 +33,7 @@ public class SeaConditionPanel extends JPanel {
         List<Double> waterTemps = new ArrayList<>();
 
         try {
-            // Fetch API data
+           
             URL url = new URL(API_URL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
@@ -70,7 +67,6 @@ public class SeaConditionPanel extends JPanel {
                 }
             }
 
-            // Create and add chart panels
             add(createChartPanel("Wave Height", "Height (m)", "Wave Height (m)", times, waveHeights));
             add(createChartPanel("Water Temperature", "Temperature (°C)", "Water Temp (°C)", times, waterTemps));
 

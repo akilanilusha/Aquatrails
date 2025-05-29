@@ -5,6 +5,10 @@ import model.DatabaseConnection;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ *
+ * @author akilanilusha
+ */
 public class UserCardRow extends JPanel {
 
     private JLabel usernameLabel;
@@ -49,7 +53,6 @@ public class UserCardRow extends JPanel {
         add(updateButton);
         add(deleteButton);
 
-        // --- Update Button Action ---
         updateButton.addActionListener(e -> {
             JTextField usernameField = new JTextField(usernameLabel.getText());
             JPasswordField passwordField = new JPasswordField(); // Empty default
@@ -113,7 +116,6 @@ public class UserCardRow extends JPanel {
 
                 DatabaseConnection.updateData(updateQuery);
 
-                // Update UI
                 usernameLabel.setText(newUsername);
                 nicLabel.setText(newNIC);
                 emailLabel.setText(newEmail);
@@ -125,9 +127,18 @@ public class UserCardRow extends JPanel {
             }
         });
 
-        // --- Delete Button Action ---
         deleteButton.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(this, "Delete User ID: " + userId + "?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showOptionDialog(
+                    this,
+                    "Delete User ID: " + userId + "?",
+                    "Confirm Delete",
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    new Object[]{"Yes", "Cancel"}, 
+                    "Cancel"
+            );
+
             if (confirm == JOptionPane.YES_OPTION) {
                 String deleteQuery = "DELETE FROM user WHERE user_id = " + userId;
                 DatabaseConnection.deleteData(deleteQuery);
