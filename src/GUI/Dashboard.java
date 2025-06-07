@@ -37,7 +37,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.swing.table.DefaultTableModel;
-import model.DatabaseConnection;
+import DatabaseModel.DatabaseConnection;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 

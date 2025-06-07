@@ -1,6 +1,6 @@
 package GUI.components.user;
 
-import model.DatabaseConnection;
+import DatabaseModel.DatabaseConnection;
 
 import javax.swing.*;
 import java.awt.*;

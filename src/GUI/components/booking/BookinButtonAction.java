@@ -4,6 +4,8 @@
  */
 package GUI.components.booking;
 
+import Entity.Booking;
+import DAO.BookingDAO;
 import GUI.Dashboard;
 import com.toedter.calendar.JDateChooser;
 import java.awt.GridLayout;
@@ -14,8 +16,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import model.DatabaseConnection;
-import model.LoadPackage;
+import DatabaseModel.DatabaseConnection;
+import DatabaseModel.LoadPackage;
 
 /**
  *
@@ -73,14 +75,15 @@ public class BookinButtonAction {
                 try {
                     double price = Double.parseDouble(priceText);
 
-                    String insertQuery = "INSERT INTO booking (visit_date, visitor_name, visitor_id, package_name, price, status) "
-                            + "VALUES ('" + new java.sql.Date(selectedDate.getTime()) + "', '"
-                            + visitorName + "', '" + visitorId + "', '" + selectedPackage + "', " + price + ", '" + status + "')";
+                    Booking booking = new Booking(selectedDate, visitorName, visitorId, selectedPackage, price, status);
+                    boolean success = BookingDAO.insertBooking(booking);
 
-                    DatabaseConnection.insertData(insertQuery);
-                    JOptionPane.showMessageDialog(dashboard, "Booking successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
-
-                    dashboard.loadBookingCards();
+                    if (success) {
+                        JOptionPane.showMessageDialog(dashboard, "Booking successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        dashboard.loadBookingCards();
+                    } else {
+                        JOptionPane.showMessageDialog(dashboard, "Failed to insert booking.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
 
                 } catch (NumberFormatException e) {
                     JOptionPane.showMessageDialog(dashboard, "Invalid price format!", "Error", JOptionPane.ERROR_MESSAGE);

@@ -5,7 +5,7 @@
 
 package GUI.components.guiders;
 
-import model.DatabaseConnection;
+import DatabaseModel.DatabaseConnection;
 
 import javax.swing.*;
 import java.awt.*;
@@ -161,7 +161,7 @@ public class GuiderCardRow extends JPanel {
         JTextField ageField = new JTextField(String.valueOf(age));
         JTextField locationField = new JTextField(location);
         JComboBox<String> packageComboBox = new JComboBox<>();
-        new model.LoadPackage().fetchPackagesFromDatabase(packageComboBox);
+        new DatabaseModel.LoadPackage().fetchPackagesFromDatabase(packageComboBox);
         packageComboBox.setSelectedItem(packageName); // Ensure correct item selected
 
         JCheckBox activeBox = new JCheckBox("Active", isActive);

@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import model.DatabaseConnection;
+import DatabaseModel.DatabaseConnection;
 
 /**
  *

@@ -2,7 +2,7 @@ package GUI.components.guiders;
 
 import GUI.Dashboard;
 import com.toedter.calendar.JDateChooser;
-import model.DatabaseConnection;
+import DatabaseModel.DatabaseConnection;
 
 import javax.swing.*;
 import java.awt.*;

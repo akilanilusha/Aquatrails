@@ -6,7 +6,7 @@ package GUI;
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import javax.swing.JOptionPane;
-import model.DatabaseConnection;
+import DatabaseModel.DatabaseConnection;
 import java.sql.*;
 
 import javax.swing.UIManager;
