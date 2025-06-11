@@ -4,17 +4,17 @@
  */
 package GUI;
 
-import GUI.components.booking.BookinButtonAction;
+import GUI.components.BookinButtonAction;
 import API.SeaConditionPanel;
 import static EnvironMentalVariable.EnvironMentalVariable.Location;
 import static EnvironMentalVariable.EnvironMentalVariable.openWeather_api;
-import GUI.components.booking.BookingCardRow;
-import GUI.components.guiders.AddGuiderButton;
-import GUI.components.guiders.GuiderCardRow;
-import GUI.components.packge.AddPackageButton;
-import GUI.components.packge.PackageCardRow;
-import GUI.components.user.AddUserButton;
-import GUI.components.user.UserCardRow;
+import GUI.components.BookingCardRow;
+import GUI.components.AddGuiderButton;
+import GUI.components.GuiderCardRow;
+import GUI.components.AddPackageButton;
+import GUI.components.PackageCardRow;
+import GUI.components.AddUserButton;
+import GUI.components.UserCardRow;
 import java.awt.CardLayout;
 import java.awt.GridLayout;
 import java.io.BufferedReader;

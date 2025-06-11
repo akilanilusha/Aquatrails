@@ -1,4 +1,4 @@
-package GUI.components.guiders;
+package GUI.components;
 
 import GUI.Dashboard;
 import com.toedter.calendar.JDateChooser;

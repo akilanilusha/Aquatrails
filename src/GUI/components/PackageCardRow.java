@@ -1,4 +1,4 @@
-package GUI.components.packge;
+package GUI.components;
 
 import DatabaseModel.DatabaseConnection;
 import javax.swing.*;

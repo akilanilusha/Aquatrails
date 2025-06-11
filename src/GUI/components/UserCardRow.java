@@ -1,4 +1,4 @@
-package GUI.components.user;
+package GUI.components;
 
 import DatabaseModel.DatabaseConnection;
 

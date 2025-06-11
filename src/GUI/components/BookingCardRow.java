@@ -1,4 +1,4 @@
-package GUI.components.booking;
+package GUI.components;
 
 import Entity.Booking;
 import DAO.BookingDAO;

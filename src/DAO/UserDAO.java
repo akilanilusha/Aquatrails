@@ -4,7 +4,6 @@
  */
 package DAO;
 
-import DatabaseModel.DatabaseConnection;
 import Entity.User;
 import DatabaseModel.DatabaseConnection;
 
