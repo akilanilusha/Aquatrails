@@ -1,28 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package GUI.components;
+package GUI.components.packages;
 
+import DAO.PackageDAO;
+import Entity.Package;
 import GUI.Dashboard;
-import com.toedter.calendar.JDateChooser;
-import java.awt.GridLayout;
-import java.util.Date;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import DatabaseModel.DatabaseConnection;
 
-/**
- *
- * @author akilanilusha
- */
+import javax.swing.*;
+import java.awt.*;
+
 public class AddPackageButton {
+
     public static void showPackageDialog(Dashboard dashboard) {
         JTextField packageCodeField = new JTextField();
         JTextField packageNameField = new JTextField();
@@ -57,35 +43,30 @@ public class AddPackageButton {
 
         JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
         JDialog dialog = optionPane.createDialog(dashboard, "Add New Package");
-
         dialog.setSize(500, 350);
         dialog.setVisible(true);
 
         if (optionPane.getValue() != null && optionPane.getValue().equals(JOptionPane.OK_OPTION)) {
-            String code = packageCodeField.getText();
-            String name = packageNameField.getText();
-            String description = packageDescriptionArea.getText();
-            String location = locationField.getText();
-            String priceText = priceField.getText();
+            String code = packageCodeField.getText().trim();
+            String name = packageNameField.getText().trim();
+            String description = packageDescriptionArea.getText().trim();
+            String location = locationField.getText().trim();
+            String priceText = priceField.getText().trim();
             String status = (String) statusComboBox.getSelectedItem();
 
-            if (code.isEmpty() || name.isEmpty() || description.isEmpty() || location.isEmpty() || priceText.isEmpty() || status == null) {
+            if (code.isEmpty() || name.isEmpty() || description.isEmpty() ||
+                location.isEmpty() || priceText.isEmpty() || status == null) {
                 JOptionPane.showMessageDialog(dashboard, "Please fill all fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
             } else {
                 try {
                     double price = Double.parseDouble(priceText);
 
-                    String insertQuery = "INSERT INTO packages (package_code, package_name, description, location, price, status) VALUES ('"
-                            + code + "', '"
-                            + name + "', '"
-                            + description + "', '"
-                            + location + "', "
-                            + price + ", '"
-                            + status + "')";
+                    Package newPackage = new Package(
+                            code, name, description, location, price, status
+                    );
 
-                    DatabaseConnection.insertData(insertQuery);
+                    PackageDAO.insertPackage(newPackage);
                     JOptionPane.showMessageDialog(dashboard, "Package added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-
                     dashboard.loadPackageCards();
 
                 } catch (NumberFormatException e) {

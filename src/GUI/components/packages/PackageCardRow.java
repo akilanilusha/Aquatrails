@@ -1,16 +1,16 @@
-package GUI.components;
+package GUI.components.packages;
 
-import DatabaseModel.DatabaseConnection;
+import DAO.PackageDAO;
+import Entity.Package;
+
 import javax.swing.*;
 import java.awt.*;
 
 /**
- *
  * @author akilanilusha
  */
 public class PackageCardRow extends JPanel {
 
-    private JLabel packageIdLabel;
     private JLabel packageCodeLabel;
     private JLabel packageNameLabel;
     private JLabel descriptionLabel;
@@ -20,10 +20,8 @@ public class PackageCardRow extends JPanel {
     private JButton updateButton;
     private JButton deleteButton;
 
-    public PackageCardRow(int packageId, String packageCode, String packageName,
-            String description, String location, double price, String status) {
-
-        setLayout(new GridLayout(1, 8, 10, 0)); // 1 row, 8 columns
+    public PackageCardRow(Package pkg) {
+        setLayout(new GridLayout(1, 8, 10, 0));
         setPreferredSize(new Dimension(900, 50));
         setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
         setBackground(new Color(245, 245, 245));
@@ -34,12 +32,12 @@ public class PackageCardRow extends JPanel {
 
         Font labelFont = new Font("Segoe UI", Font.PLAIN, 14);
 
-        packageCodeLabel = createCenteredLabel(packageCode, labelFont);
-        packageNameLabel = createCenteredLabel(packageName, labelFont);
-        descriptionLabel = createCenteredLabel(description, labelFont);
-        locationLabel = createCenteredLabel(location, labelFont);
-        priceLabel = createCenteredLabel("$" + price, labelFont);
-        statusLabel = createCenteredLabel(status, labelFont);
+        packageCodeLabel = createCenteredLabel(pkg.getPackageCode(), labelFont);
+        packageNameLabel = createCenteredLabel(pkg.getPackageName(), labelFont);
+        descriptionLabel = createCenteredLabel(pkg.getDescription(), labelFont);
+        locationLabel = createCenteredLabel(pkg.getLocation(), labelFont);
+        priceLabel = createCenteredLabel("$" + pkg.getPrice(), labelFont);
+        statusLabel = createCenteredLabel(pkg.getStatus(), labelFont);
 
         updateButton = createStyledButton("Update", new Color(76, 175, 80));
         deleteButton = createStyledButton("Delete", new Color(244, 67, 54));
@@ -52,30 +50,24 @@ public class PackageCardRow extends JPanel {
         add(updateButton);
         add(deleteButton);
 
-        updateStatusLabelColor(status);
+        updateStatusLabelColor(pkg.getStatus());
 
         updateButton.addActionListener(e -> {
-            JTextField nameField = new JTextField(packageName);
-            JTextField descriptionField = new JTextField(description);
-            JTextField priceField = new JTextField(String.valueOf(price));
-            JTextField locationField = new JTextField(location);
+            JTextField codeField = new JTextField(pkg.getPackageCode());
+            JTextField nameField = new JTextField(pkg.getPackageName());
+            JTextField descriptionField = new JTextField(pkg.getDescription());
+            JTextField locationField = new JTextField(pkg.getLocation());
+            JTextField priceField = new JTextField(String.valueOf(pkg.getPrice()));
 
             JComboBox<String> statusComboBox = new JComboBox<>(new String[]{"Active", "Pending", "Closed"});
-            statusComboBox.setSelectedItem(status);
+            statusComboBox.setSelectedItem(pkg.getStatus());
 
-            Dimension inputSize = new Dimension(250, 30);
-            Font modernFont = new Font("Segoe UI", Font.PLAIN, 16);
-
-            for (JComponent field : new JComponent[]{nameField, descriptionField, priceField, locationField, statusComboBox}) {
-                field.setPreferredSize(inputSize);
-                field.setFont(modernFont);
-                field.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
-            }
-
-            JPanel updatePanel = new JPanel(new GridLayout(5, 2, 15, 15));
+            JPanel updatePanel = new JPanel(new GridLayout(6, 2, 10, 10));
             updatePanel.setPreferredSize(new Dimension(500, 300));
-            updatePanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+            updatePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+            updatePanel.add(new JLabel("Package Code:"));
+            updatePanel.add(codeField);
             updatePanel.add(new JLabel("Package Name:"));
             updatePanel.add(nameField);
             updatePanel.add(new JLabel("Description:"));
@@ -88,26 +80,22 @@ public class PackageCardRow extends JPanel {
             updatePanel.add(statusComboBox);
 
             int result = JOptionPane.showConfirmDialog(this, updatePanel,
-                    "Update Package ID: " + packageId, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                    "Update Package ID: " + pkg.getPackageId(), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
             if (result == JOptionPane.OK_OPTION) {
-                String newName = nameField.getText();
-                String newDesc = descriptionField.getText();
-                String newLocation = locationField.getText();
-                String newStatus = (String) statusComboBox.getSelectedItem();
-
                 try {
+                    String newCode = codeField.getText();
+                    String newName = nameField.getText();
+                    String newDesc = descriptionField.getText();
+                    String newLocation = locationField.getText();
                     double newPrice = Double.parseDouble(priceField.getText());
+                    String newStatus = (String) statusComboBox.getSelectedItem();
 
-                    String updateQuery = "UPDATE packages SET package_name = '" + newName
-                            + "', description = '" + newDesc
-                            + "', location = '" + newLocation
-                            + "', price = " + newPrice
-                            + ", status = '" + newStatus
-                            + "' WHERE package_id = " + packageId;
+                    Package updatedPkg = new Package(pkg.getPackageId(), newCode, newName, newDesc, newLocation, newPrice, newStatus);
+                    PackageDAO.updatePackage(updatedPkg);
 
-                    DatabaseConnection.updateData(updateQuery);
-
+                    // UI Updates
+                    packageCodeLabel.setText(newCode);
                     packageNameLabel.setText(newName);
                     descriptionLabel.setText(newDesc);
                     locationLabel.setText(newLocation);
@@ -117,26 +105,21 @@ public class PackageCardRow extends JPanel {
 
                     JOptionPane.showMessageDialog(this, "Package updated successfully!");
                 } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "Invalid price!", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Invalid price format!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
         deleteButton.addActionListener(e -> {
-            int confirm = JOptionPane.showOptionDialog(
+            int confirm = JOptionPane.showConfirmDialog(
                     this,
-                    "Delete Package ID: " + packageId + "?",
+                    "Are you sure you want to delete this package?",
                     "Confirm Delete",
-                    JOptionPane.YES_NO_CANCEL_OPTION,
-                    JOptionPane.QUESTION_MESSAGE,
-                    null,
-                    new Object[]{"Yes", "Cancel"},
-                    "Cancel"
+                    JOptionPane.YES_NO_OPTION
             );
 
             if (confirm == JOptionPane.YES_OPTION) {
-                String deleteQuery = "DELETE FROM packages WHERE package_id = " + packageId;
-                DatabaseConnection.deleteData(deleteQuery);
+                PackageDAO.deletePackage(pkg.getPackageId());
 
                 Container parent = this.getParent();
                 if (parent != null) {
@@ -167,15 +150,15 @@ public class PackageCardRow extends JPanel {
     private void updateStatusLabelColor(String status) {
         switch (status) {
             case "Active" -> {
-                statusLabel.setBackground(new Color(76, 175, 80)); // Green
+                statusLabel.setBackground(new Color(76, 175, 80));
                 statusLabel.setForeground(Color.WHITE);
             }
             case "Pending" -> {
-                statusLabel.setBackground(new Color(255, 235, 59)); // Yellow
+                statusLabel.setBackground(new Color(255, 235, 59));
                 statusLabel.setForeground(Color.BLACK);
             }
             case "Closed" -> {
-                statusLabel.setBackground(new Color(244, 67, 54)); // Red
+                statusLabel.setBackground(new Color(244, 67, 54));
                 statusLabel.setForeground(Color.WHITE);
             }
             default -> {

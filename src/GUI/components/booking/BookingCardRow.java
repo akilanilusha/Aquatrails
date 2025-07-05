@@ -1,4 +1,4 @@
-package GUI.components;
+package GUI.components.booking;
 
 import Entity.Booking;
 import DAO.BookingDAO;
@@ -165,6 +165,7 @@ public class BookingCardRow extends JPanel {
         return button;
     }
 
+    //chnge lble color
     private void updateStatusLabelColor(String status) {
         switch (status) {
             case "confirmed" -> {

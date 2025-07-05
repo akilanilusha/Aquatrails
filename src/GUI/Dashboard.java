@@ -4,17 +4,17 @@
  */
 package GUI;
 
-import GUI.components.BookinButtonAction;
+import GUI.components.booking.BookinButtonAction;
 import API.SeaConditionPanel;
 import static EnvironMentalVariable.EnvironMentalVariable.Location;
 import static EnvironMentalVariable.EnvironMentalVariable.openWeather_api;
-import GUI.components.BookingCardRow;
-import GUI.components.AddGuiderButton;
-import GUI.components.GuiderCardRow;
-import GUI.components.AddPackageButton;
-import GUI.components.PackageCardRow;
-import GUI.components.AddUserButton;
-import GUI.components.UserCardRow;
+import GUI.components.booking.BookingCardRow;
+import GUI.components.guider.AddGuiderButton;
+import GUI.components.guider.GuiderCardRow;
+import GUI.components.packages.AddPackageButton;
+import GUI.components.packages.PackageCardRow;
+import GUI.components.user.AddUserButton;
+import GUI.components.user.UserCardRow;
 import java.awt.CardLayout;
 import java.awt.GridLayout;
 import java.io.BufferedReader;
@@ -298,7 +298,10 @@ public final class Dashboard extends javax.swing.JFrame {
                 double price = rs.getDouble("price");
                 String status = rs.getString("status");
 
-                PackageCardRow card = new PackageCardRow(packageId, packageCode, packageName, description, location, price, status);
+                Entity.Package pkg = new Entity.Package(packageId, packageCode, packageName, description, location, price, status);
+
+                //Package pkg = new Package(packageId, packageCode, packageName, description, location, price, status);
+                PackageCardRow card = new PackageCardRow(pkg);
 
                 loadPackageCard.add(card);
             }
@@ -317,18 +320,27 @@ public final class Dashboard extends javax.swing.JFrame {
         try {
             Connection conn = DatabaseConnection.getConnection();
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT guider_id, name, date_of_birth,  TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) AS age, location, package_name, is_active, image_base64 FROM guider");
+            ResultSet rs = stmt.executeQuery(
+                    "SELECT guider_id, name, date_of_birth, "
+                    + "TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) AS age, "
+                    + "location, package_name, is_active, image_base64 "
+                    + "FROM guider"
+            );
 
             while (rs.next()) {
                 int guiderId = rs.getInt("guider_id");
                 String name = rs.getString("name");
+                String dateOfBirth = rs.getString("date_of_birth"); // 👈 FIXED: fetch dob
                 int age = rs.getInt("age");
                 String location = rs.getString("location");
                 String packageName = rs.getString("package_name");
                 boolean isActive = rs.getBoolean("is_active");
                 String imageBase64 = rs.getString("image_base64");
 
-                GuiderCardRow card = new GuiderCardRow(guiderId, name, age, location, packageName, isActive, imageBase64);
+                // 👇 Pass dateOfBirth now
+                GuiderCardRow card = new GuiderCardRow(
+                        guiderId, name, age, location, packageName, isActive, imageBase64, dateOfBirth
+                );
                 loadGuiderCard.add(card);
             }
 
@@ -477,12 +489,15 @@ public final class Dashboard extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         seeConditionChart = new javax.swing.JPanel();
         TodayBookings = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
-        todaybooking = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        avilablePackage = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         avilableguide = new javax.swing.JLabel();
+        jPanel10 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        todaybooking = new javax.swing.JLabel();
+        jPanel11 = new javax.swing.JPanel();
+        jLabel11 = new javax.swing.JLabel();
+        avilablePackage = new javax.swing.JLabel();
+        jPanel12 = new javax.swing.JPanel();
         Datetime = new javax.swing.JPanel();
         Date = new javax.swing.JLabel();
         Time = new javax.swing.JLabel();
@@ -660,7 +675,7 @@ public final class Dashboard extends javax.swing.JFrame {
                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
                 .addComponent(logoutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(22, 22, 22))
         );
@@ -729,7 +744,6 @@ public final class Dashboard extends javax.swing.JFrame {
                 .addGap(14, 14, 14))
         );
 
-        TodayBookings.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204), 2));
         TodayBookings.addAncestorListener(new javax.swing.event.AncestorListener() {
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
                 TodayBookingsAncestorAdded(evt);
@@ -741,11 +755,24 @@ public final class Dashboard extends javax.swing.JFrame {
         });
         TodayBookings.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        jLabel4.setText("Today Bookings");
-        TodayBookings.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 10, -1, -1));
+        jLabel13.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
+        jLabel13.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel13.setText("Avilable Guides");
+        TodayBookings.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 10, -1, -1));
 
-        todaybooking.setFont(new java.awt.Font("Helvetica Neue", 0, 36)); // NOI18N
+        avilableguide.setFont(new java.awt.Font("Helvetica Neue", 1, 36)); // NOI18N
+        avilableguide.setForeground(new java.awt.Color(255, 255, 255));
+        avilableguide.setText("44");
+        TodayBookings.add(avilableguide, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 50, -1, -1));
+
+        jPanel10.setBackground(new java.awt.Color(0, 196, 117));
+
+        jLabel4.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setText("Today Bookings");
+
+        todaybooking.setFont(new java.awt.Font("Helvetica Neue", 1, 36)); // NOI18N
+        todaybooking.setForeground(new java.awt.Color(255, 255, 255));
         todaybooking.setText("44");
         todaybooking.addAncestorListener(new javax.swing.event.AncestorListener() {
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
@@ -756,23 +783,83 @@ public final class Dashboard extends javax.swing.JFrame {
             public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
             }
         });
-        TodayBookings.add(todaybooking, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 50, -1, -1));
 
-        jLabel11.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel4))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addGap(77, 77, 77)
+                        .addComponent(todaybooking)))
+                .addContainerGap(17, Short.MAX_VALUE))
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(todaybooking, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(16, 16, 16))
+        );
+
+        TodayBookings.add(jPanel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 210, 110));
+
+        jPanel11.setBackground(new java.awt.Color(0, 51, 255));
+
+        jLabel11.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
+        jLabel11.setForeground(new java.awt.Color(255, 255, 255));
         jLabel11.setText("Avilable Packages");
-        TodayBookings.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 10, -1, -1));
 
-        avilablePackage.setFont(new java.awt.Font("Helvetica Neue", 0, 36)); // NOI18N
+        avilablePackage.setFont(new java.awt.Font("Helvetica Neue", 1, 36)); // NOI18N
+        avilablePackage.setForeground(new java.awt.Color(255, 255, 255));
         avilablePackage.setText("44");
-        TodayBookings.add(avilablePackage, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 50, -1, -1));
 
-        jLabel13.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        jLabel13.setText("Avilable Guides");
-        TodayBookings.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 10, -1, -1));
+        javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
+        jPanel11.setLayout(jPanel11Layout);
+        jPanel11Layout.setHorizontalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel11Layout.createSequentialGroup()
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel11))
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addGap(91, 91, 91)
+                        .addComponent(avilablePackage)))
+                .addContainerGap(14, Short.MAX_VALUE))
+        );
+        jPanel11Layout.setVerticalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel11Layout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(jLabel11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(avilablePackage)
+                .addContainerGap(11, Short.MAX_VALUE))
+        );
 
-        avilableguide.setFont(new java.awt.Font("Helvetica Neue", 0, 36)); // NOI18N
-        avilableguide.setText("44");
-        TodayBookings.add(avilableguide, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 50, -1, -1));
+        TodayBookings.add(jPanel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 0, 230, 110));
+
+        jPanel12.setBackground(new java.awt.Color(213, 15, 241));
+
+        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
+        jPanel12.setLayout(jPanel12Layout);
+        jPanel12Layout.setHorizontalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 220, Short.MAX_VALUE)
+        );
+        jPanel12Layout.setVerticalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 110, Short.MAX_VALUE)
+        );
+
+        TodayBookings.add(jPanel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 0, 220, 110));
 
         Date.setFont(new java.awt.Font("Kailasa", 1, 24)); // NOI18N
         Date.setForeground(new java.awt.Color(0, 0, 102));
@@ -790,7 +877,7 @@ public final class Dashboard extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(DatetimeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(Time, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(Date, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(Date, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE))
                 .addGap(43, 43, 43))
         );
         DatetimeLayout.setVerticalGroup(
@@ -816,7 +903,7 @@ public final class Dashboard extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(TodayBookings, javax.swing.GroupLayout.PREFERRED_SIZE, 557, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(TodayBookings, javax.swing.GroupLayout.PREFERRED_SIZE, 677, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(Datetime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -1206,7 +1293,7 @@ public final class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_jPanel3AncestorAdded
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        BookinButtonAction.showBookingDialog(this);
+        BookinButtonAction.showBookingDialog(this); //pass dashboard object to the showBookingDialog 
 
     }//GEN-LAST:event_jButton6ActionPerformed
 
@@ -1265,7 +1352,7 @@ public final class Dashboard extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton5ActionPerformed
 
-    
+
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         String inputKey = JOptionPane.showInputDialog(this, "Enter access key to continue:");
         String validKey = "abc";
@@ -1347,6 +1434,9 @@ public final class Dashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;

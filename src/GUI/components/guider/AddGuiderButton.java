@@ -1,6 +1,8 @@
-package GUI.components;
+package GUI.components.guider;
 
 import GUI.Dashboard;
+import DAO.GuiderDAO;
+import Entity.Guider;
 import com.toedter.calendar.JDateChooser;
 import DatabaseModel.DatabaseConnection;
 
@@ -10,17 +12,11 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
-
-/**
- *
- * @author akilanilusha
- */
 
 public class AddGuiderButton {
 
@@ -35,8 +31,8 @@ public class AddGuiderButton {
         JComboBox<String> packageComboBox = new JComboBox<>();
         JCheckBox activeCheckbox = new JCheckBox("Is Active", true);
 
-        try {
-            var rs = DatabaseConnection.getConnection().createStatement().executeQuery("SELECT package_name FROM packages");
+        try (var stmt = DatabaseConnection.getConnection().createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT package_name FROM packages")) {
             while (rs.next()) {
                 packageComboBox.addItem(rs.getString("package_name"));
             }
@@ -44,12 +40,13 @@ public class AddGuiderButton {
             e.printStackTrace();
         }
 
-        // Image upload and preview
+        // Image preview
         JLabel imagePreviewLabel = new JLabel();
         imagePreviewLabel.setPreferredSize(new Dimension(150, 150));
         imagePreviewLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         final String[] imageBase64 = {null};
 
+        // Upload Button
         JButton uploadButton = new JButton("Upload Image");
         uploadButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
@@ -58,37 +55,30 @@ public class AddGuiderButton {
                 File file = fileChooser.getSelectedFile();
                 try {
                     byte[] imageBytes = Files.readAllBytes(file.toPath());
-                    imageBase64[0] = Base64.getEncoder().encodeToString(imageBytes); //encode image using base 64 encoder
+                    imageBase64[0] = Base64.getEncoder().encodeToString(imageBytes);
 
                     ImageIcon icon = new ImageIcon(imageBytes);
                     Image scaled = icon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
                     imagePreviewLabel.setIcon(new ImageIcon(scaled));
 
-                    JOptionPane.showMessageDialog(null, "Image uploaded successfully!");
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(null, "Failed to read image!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
-        
-        // Input panel
+        // Input Panel
         JPanel inputPanel = new JPanel(new GridLayout(6, 2, 5, 5));
         inputPanel.add(new JLabel("Name:"));
         inputPanel.add(nameField);
-
         inputPanel.add(new JLabel("Date of Birth:"));
         inputPanel.add(dateChooser);
-
         inputPanel.add(new JLabel("Location:"));
         inputPanel.add(locationField);
-
         inputPanel.add(new JLabel("Package:"));
         inputPanel.add(packageComboBox);
-
         inputPanel.add(new JLabel("Active:"));
         inputPanel.add(activeCheckbox);
-
         inputPanel.add(new JLabel("Image:"));
         inputPanel.add(uploadButton);
 
@@ -119,26 +109,19 @@ public class AddGuiderButton {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     String dob = sdf.format(selectedDate);
 
-                    // Use PreparedStatement for safe query execution
-                    String insertQuery = "INSERT INTO guider (name, date_of_birth, location, package_name, is_active, image_base64) VALUES (?, ?, ?, ?, ?, ?)";
-                    try (Connection conn = DatabaseConnection.getConnection();
-                         PreparedStatement ps = conn.prepareStatement(insertQuery)) {
+                    Guider guider = new Guider(name, dob, location, packageName, isActive, imageBase64[0]);
 
-                        ps.setString(1, name);
-                        ps.setString(2, dob);
-                        ps.setString(3, location);
-                        ps.setString(4, packageName);
-                        ps.setBoolean(5, isActive);
-                        ps.setString(6, imageBase64[0] != null ? imageBase64[0] : null);
+                    boolean success = GuiderDAO.insertGuider(guider);
 
-                        ps.executeUpdate();
+                    if (success) {
                         JOptionPane.showMessageDialog(dashboard, "Guider added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-
                         dashboard.loadGuiderCards();
-
+                    } else {
+                        JOptionPane.showMessageDialog(dashboard, "Failed to add guider.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(dashboard, "Error saving guider.", "Database Error", JOptionPane.ERROR_MESSAGE);
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(dashboard, "An error occurred.", "Error", JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();
                 }
             }

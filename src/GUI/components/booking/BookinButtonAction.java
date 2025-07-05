@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package GUI.components;
+package GUI.components.booking;
 
 import Entity.Booking;
 import DAO.BookingDAO;
@@ -57,10 +57,12 @@ public class BookinButtonAction {
         new LoadPackage().fetchPackagesFromDatabase(packageComboBox);
 
         JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-        JDialog dialog = optionPane.createDialog(dashboard, "New Booking");
+        JDialog dialog = optionPane.createDialog(dashboard, "New Booking"); //open model
         dialog.setSize(500, 350);
         dialog.setVisible(true);
 
+        
+        //assign values for the variables
         if (optionPane.getValue() != null && optionPane.getValue().equals(JOptionPane.OK_OPTION)) {
             Date selectedDate = dateChooser.getDate();
             String visitorName = visitorNameField.getText();
@@ -69,18 +71,20 @@ public class BookinButtonAction {
             String priceText = priceField.getText();
             String status = (String) statusComboBox.getSelectedItem();
 
+            //check null
             if (selectedDate == null || visitorName.isEmpty() || visitorId.isEmpty() || selectedPackage == null || priceText.isEmpty() || status == null) {
                 JOptionPane.showMessageDialog(dashboard, "Please fill all fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
             } else {
                 try {
                     double price = Double.parseDouble(priceText);
 
+                    //create booking object 
                     Booking booking = new Booking(selectedDate, visitorName, visitorId, selectedPackage, price, status);
                     boolean success = BookingDAO.insertBooking(booking);
 
                     if (success) {
                         JOptionPane.showMessageDialog(dashboard, "Booking successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                        dashboard.loadBookingCards();
+                        dashboard.loadBookingCards();//refresh cards
                     } else {
                         JOptionPane.showMessageDialog(dashboard, "Failed to insert booking.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
