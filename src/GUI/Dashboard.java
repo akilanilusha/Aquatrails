@@ -38,8 +38,16 @@ import org.json.JSONObject;
 
 import javax.swing.table.DefaultTableModel;
 import DatabaseModel.DatabaseConnection;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import javax.swing.Box;
 
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
@@ -377,7 +385,6 @@ public final class Dashboard extends javax.swing.JFrame {
     private void loadWeatherForecastList() {
         new Thread(() -> {
             try {
-
                 String city = Location;
                 String urlString = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&units=metric&appid=" + apiKey;
 
@@ -393,41 +400,69 @@ public final class Dashboard extends javax.swing.JFrame {
                 }
                 reader.close();
 
-                String jsonResponse = json.toString();
-                //LOGGER.log(Level.INFO, "Weather API Response: {0}", jsonResponse);
-
-                JSONObject jsonObj = new JSONObject(jsonResponse);
+                JSONObject jsonObj = new JSONObject(json.toString());
                 JSONArray list = jsonObj.getJSONArray("list");
 
                 JPanel forecastListPanel = new JPanel();
                 forecastListPanel.setLayout(new BoxLayout(forecastListPanel, BoxLayout.Y_AXIS));
+                forecastListPanel.setBackground(new Color(240, 240, 240)); // light gray background
 
-                for (int i = 0; i < list.length(); i++) {
+                for (int i = 0; i < list.length(); i += 3) { // skip every 3 to reduce clutter
                     JSONObject entry = list.getJSONObject(i);
                     String dateTime = entry.getString("dt_txt");
-                    JSONObject main = entry.getJSONObject("main");
-                    double temp = main.getDouble("temp");
+                    double temp = entry.getJSONObject("main").getDouble("temp");
+                    String description = entry.getJSONArray("weather").getJSONObject(0).getString("description");
 
-                    JSONArray weatherArr = entry.getJSONArray("weather");
-                    String description = weatherArr.getJSONObject(0).getString("description");
-
-                    JLabel label = new JLabel("⏰ " + dateTime + " | 🌡️ " + temp + "°C | " + description);
-                    label.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-                    forecastListPanel.add(label);
+                    JPanel card = createWeatherCard(dateTime, temp, description);
+                    forecastListPanel.add(card);
+                    forecastListPanel.add(Box.createRigidArea(new Dimension(0, 10))); // spacing between cards
                 }
 
-                SwingUtilities.invokeLater(() -> {
-                    weatherPanel.setViewportView(forecastListPanel);
-                });
+                SwingUtilities.invokeLater(() -> weatherPanel.setViewportView(forecastListPanel));
 
             } catch (Exception e) {
-                // LOGGER.log(Level.SEVERE, "Error loading weather forecast: {0}", e.getMessage()); // Log the error
-                SwingUtilities.invokeLater(() -> {
-                    JOptionPane.showMessageDialog(this, "Failed to load weather data. Please check your network connection and API key.", "Error", JOptionPane.ERROR_MESSAGE);
-                });
-
+                SwingUtilities.invokeLater(()
+                        -> JOptionPane.showMessageDialog(this, "Failed to load weather data.", "Error", JOptionPane.ERROR_MESSAGE)
+                );
             }
         }).start();
+    }
+
+    private JPanel createWeatherCard(String dateTime, double temp, String description) {
+        JPanel card = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
+            }
+        };
+
+        card.setOpaque(false);
+        card.setPreferredSize(new Dimension(300, 60));
+        card.setMaximumSize(new Dimension(300, 60));
+        card.setLayout(new BorderLayout());
+        card.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+
+        JLabel dateLabel = new JLabel(dateTime);
+        dateLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
+
+        JLabel tempLabel = new JLabel(String.format("🌡 %.1f°C", temp));
+        tempLabel.setFont(new Font("SansSerif", Font.PLAIN, 13));
+
+        JLabel descLabel = new JLabel("☁ " + description);
+        descLabel.setFont(new Font("SansSerif", Font.PLAIN, 13));
+
+        JPanel textPanel = new JPanel(new GridLayout(3, 1));
+        textPanel.setOpaque(false);
+        textPanel.add(dateLabel);
+        textPanel.add(tempLabel);
+        textPanel.add(descLabel);
+
+        card.add(textPanel, BorderLayout.CENTER);
+        return card;
     }
 
     public void loadUserCards() {
