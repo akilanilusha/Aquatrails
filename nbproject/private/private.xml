@@ -2,19 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/Users/akilanilusha/Desktop/desktop%20app%20java/AquaTrails/src/GUI/components/guider/AddGuiderButton.java</file>
-            <file>file:/Users/akilanilusha/Desktop/desktop%20app%20java/AquaTrails/src/GUI/components/packages/PackageCardRow.java</file>
-            <file>file:/Users/akilanilusha/Desktop/desktop%20app%20java/AquaTrails/src/GUI/Dashboard.java</file>
-            <file>file:/Users/akilanilusha/Desktop/desktop%20app%20java/AquaTrails/src/DAO/PackageDAO.java</file>
-            <file>file:/Users/akilanilusha/Desktop/desktop%20app%20java/AquaTrails/src/Entity/Package.java</file>
-            <file>file:/Users/akilanilusha/Desktop/desktop%20app%20java/AquaTrails/src/DAO/GuiderDAO.java</file>
-            <file>file:/Users/akilanilusha/Desktop/desktop%20app%20java/AquaTrails/src/GUI/components/guider/GuiderCardRow.java</file>
-            <file>file:/Users/akilanilusha/Desktop/desktop%20app%20java/AquaTrails/src/GUI/components/packages/AddPackageButton.java</file>
-            <file>file:/Users/akilanilusha/Desktop/desktop%20app%20java/AquaTrails/src/GUI/LoginUser.java</file>
-            <file>file:/Users/akilanilusha/Desktop/desktop%20app%20java/AquaTrails/src/Entity/Guider.java</file>
-            <file>file:/Users/akilanilusha/Desktop/desktop%20app%20java/AquaTrails/src/DatabaseModel/LoadPackage.java</file>
-            <file>file:/Users/akilanilusha/Desktop/desktop%20app%20java/AquaTrails/src/API/SeaConditionPanel.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

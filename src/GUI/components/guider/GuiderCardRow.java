@@ -28,7 +28,7 @@ public class GuiderCardRow extends JPanel {
     private String dateOfBirth;
 
     public GuiderCardRow(int guiderId, String name, int age, String location,
-                         String packageName, boolean isActive, String imageBase64, String dateOfBirth) {
+            String packageName, boolean isActive, String imageBase64, String dateOfBirth) {
 
         this.guiderId = guiderId;
         this.location = location;
@@ -85,13 +85,13 @@ public class GuiderCardRow extends JPanel {
 
     private void showViewDialog(String name, int age, String packageName, boolean isActive) {
         JTextArea textArea = new JTextArea(
-                "Guider ID: " + guiderId +
-                        "\nName: " + name +
-                        "\nAge: " + age + " yrs" +
-                        "\nDOB: " + dateOfBirth +
-                        "\nLocation: " + location +
-                        "\nPackage: " + packageName +
-                        "\nStatus: " + (isActive ? "Active" : "Inactive")
+                "Guider ID: " + guiderId
+                + "\nName: " + name
+                + "\nAge: " + age + " yrs"
+                + "\nDOB: " + dateOfBirth
+                + "\nLocation: " + location
+                + "\nPackage: " + packageName
+                + "\nStatus: " + (isActive ? "Active" : "Inactive")
         );
         textArea.setEditable(false);
         textArea.setFont(new Font("Segoe UI", Font.PLAIN, 15));
@@ -193,7 +193,14 @@ public class GuiderCardRow extends JPanel {
     }
 
     private void handleDelete() {
-        int confirm = JOptionPane.showConfirmDialog(this, "Delete Guider ID: " + guiderId + "?");
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to delete Guider ID: " + guiderId + "?",
+                "Confirm Deletion",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+
         if (confirm == JOptionPane.YES_OPTION) {
             boolean deleted = GuiderDAO.deleteGuiderById(guiderId);
             if (deleted) {
