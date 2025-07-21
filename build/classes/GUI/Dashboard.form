@@ -866,7 +866,12 @@
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jButton6" alignment="1" min="-2" pref="152" max="-2" attributes="0"/>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  <Component id="booking_search" min="-2" pref="202" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="jButton6" min="-2" pref="152" max="-2" attributes="0"/>
+                              </Group>
                               <Component id="jScrollPane1" alignment="1" pref="1101" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
@@ -884,10 +889,13 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="jButton6" min="-2" pref="46" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="jButton6" pref="46" max="32767" attributes="0"/>
+                              <Component id="booking_search" alignment="0" max="32767" attributes="0"/>
+                          </Group>
                           <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                           <Component id="jScrollPane1" pref="403" max="32767" attributes="0"/>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -957,6 +965,11 @@
                     </Container>
                   </SubComponents>
                 </Container>
+                <Component class="javax.swing.JTextField" name="booking_search">
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="booking_searchActionPerformed"/>
+                  </Events>
+                </Component>
               </SubComponents>
             </Container>
             <Container class="javax.swing.JPanel" name="jPanel4">

@@ -541,6 +541,7 @@ public final class Dashboard extends javax.swing.JFrame {
         jButton6 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         loadBookingCard = new javax.swing.JPanel();
+        booking_search = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         newPackage = new javax.swing.JButton();
@@ -1006,6 +1007,12 @@ public final class Dashboard extends javax.swing.JFrame {
         loadBookingCard.setLayout(new java.awt.BorderLayout());
         jScrollPane1.setViewportView(loadBookingCard);
 
+        booking_search.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                booking_searchActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -1013,7 +1020,11 @@ public final class Dashboard extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(booking_search, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1101, Short.MAX_VALUE))
                 .addGap(24, 24, 24))
             .addGroup(jPanel3Layout.createSequentialGroup()
@@ -1027,7 +1038,9 @@ public final class Dashboard extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
+                    .addComponent(booking_search))
                 .addGap(12, 12, 12)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
                 .addContainerGap())
@@ -1409,6 +1422,62 @@ public final class Dashboard extends javax.swing.JFrame {
 
     }//GEN-LAST:event_todaybookingAncestorAdded
 
+    private void booking_searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_booking_searchActionPerformed
+        // TODO add your handling code here:
+        String visitorId = booking_search.getText().trim();
+
+        if (visitorId.isEmpty()) {
+            loadBookingsByVisitorId("");
+        }
+
+        loadBookingsByVisitorId(visitorId);
+    }//GEN-LAST:event_booking_searchActionPerformed
+
+    private void loadBookingsByVisitorId(String visitorId) {
+    loadBookingCard.removeAll(); // Clear previous results
+
+    String query;
+
+    // If visitorId is empty, load all bookings
+    if (visitorId == null || visitorId.trim().isEmpty()) {
+        query = "SELECT * FROM booking";
+    } else {
+        query = "SELECT * FROM booking WHERE visitor_id = '" + visitorId + "'";
+    }
+
+    try (ResultSet rs = DatabaseModel.DatabaseConnection.searchData(query)) {
+        boolean found = false;
+
+        while (rs != null && rs.next()) {
+            found = true;
+
+            int bookingId = rs.getInt("booking_id");
+            String name = rs.getString("visitor_name");
+            String packageName = rs.getString("package_name");
+            double price = rs.getDouble("price");
+            String status = rs.getString("status");
+            String bookingDate = rs.getString("visit_date");
+
+            BookingCardRow card = new BookingCardRow(bookingId, name, packageName, price, status, bookingDate);
+            loadBookingCard.add(card);
+        }
+
+        if (!found) {
+            JOptionPane.showMessageDialog(this, "No bookings found" + 
+                (visitorId.isEmpty() ? "." : " for Visitor ID: " + visitorId));
+            
+        }
+
+        loadBookingCard.revalidate();
+        loadBookingCard.repaint();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Failed to load bookings: " + e.getMessage());
+    }
+}
+
+
     /**
      * @param args the command line arguments
      */
@@ -1451,6 +1520,7 @@ public final class Dashboard extends javax.swing.JFrame {
     private javax.swing.JPanel TodayBookings;
     private javax.swing.JLabel avilablePackage;
     private javax.swing.JLabel avilableguide;
+    private javax.swing.JTextField booking_search;
     private javax.swing.JPanel header;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

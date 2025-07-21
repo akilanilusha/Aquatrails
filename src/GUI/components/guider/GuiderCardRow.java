@@ -183,7 +183,6 @@ public class GuiderCardRow extends JPanel {
                     activeStatusLabel.setForeground(newStatus ? Color.GREEN.darker() : Color.RED);
                     this.dateOfBirth = newDob;
                     JOptionPane.showMessageDialog(this, "Guider updated successfully!");
-                    new Dashboard().loadLableValues();
                 } else {
                     JOptionPane.showMessageDialog(this, "Failed to update guider.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
