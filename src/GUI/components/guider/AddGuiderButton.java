@@ -31,8 +31,7 @@ public class AddGuiderButton {
         JComboBox<String> packageComboBox = new JComboBox<>();
         JCheckBox activeCheckbox = new JCheckBox("Is Active", true);
 
-        try (var stmt = DatabaseConnection.getConnection().createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT package_name FROM packages")) {
+        try (var stmt = DatabaseConnection.getConnection().createStatement(); ResultSet rs = stmt.executeQuery("SELECT package_name FROM packages")) {
             while (rs.next()) {
                 packageComboBox.addItem(rs.getString("package_name"));
             }
@@ -116,6 +115,7 @@ public class AddGuiderButton {
                     if (success) {
                         JOptionPane.showMessageDialog(dashboard, "Guider added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                         dashboard.loadGuiderCards();
+
                     } else {
                         JOptionPane.showMessageDialog(dashboard, "Failed to add guider.", "Error", JOptionPane.ERROR_MESSAGE);
                     }

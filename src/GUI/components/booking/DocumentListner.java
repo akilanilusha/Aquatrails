@@ -11,10 +11,10 @@ import javax.swing.event.DocumentListener;
  * @author akilanilusha
  */
 
-public abstract class SimpleDocumentListener implements DocumentListener {
+public abstract class DocumentListner implements DocumentListener {
     private final Runnable onChange;
 
-    public SimpleDocumentListener(Runnable onChange) {
+    public DocumentListner(Runnable onChange) {
         this.onChange = onChange;
     }
 

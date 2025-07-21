@@ -4,7 +4,7 @@ import DAO.BookingDAO;
 import DatabaseModel.LoadPackage;
 import Entity.Booking;
 import GUI.Dashboard;
-import GUI.components.booking.SimpleDocumentListener;
+import GUI.components.booking.DocumentListner;
 import com.toedter.calendar.JDateChooser;
 import java.awt.GridLayout;
 import java.util.Date;
@@ -86,8 +86,10 @@ public class BookinButtonAction {
 
         // Add listeners
         packageComboBox.addActionListener(e -> updatePrice.run());
-        memberCountField.getDocument().addDocumentListener(new SimpleDocumentListener(updatePrice) {});
-        discountField.getDocument().addDocumentListener(new SimpleDocumentListener(updatePrice) {});
+        memberCountField.getDocument().addDocumentListener(new DocumentListner(updatePrice) {
+        });
+        discountField.getDocument().addDocumentListener(new DocumentListner(updatePrice) {
+        });
 
         JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
         JDialog dialog = optionPane.createDialog(dashboard, "New Booking");
@@ -102,8 +104,8 @@ public class BookinButtonAction {
             String priceText = priceField.getText();
             String status = (String) statusComboBox.getSelectedItem();
 
-            if (selectedDate == null || visitorName.isEmpty() || visitorId.isEmpty() ||
-                selectedPackage == null || priceText.isEmpty() || status == null || priceText.equals("Invalid input")) {
+            if (selectedDate == null || visitorName.isEmpty() || visitorId.isEmpty()
+                    || selectedPackage == null || priceText.isEmpty() || status == null || priceText.equals("Invalid input")) {
                 JOptionPane.showMessageDialog(dashboard, "Please fill all fields correctly.", "Input Error", JOptionPane.ERROR_MESSAGE);
             } else {
                 try {
@@ -114,6 +116,7 @@ public class BookinButtonAction {
                     if (success) {
                         JOptionPane.showMessageDialog(dashboard, "Booking successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
                         dashboard.loadBookingCards();
+
                     } else {
                         JOptionPane.showMessageDialog(dashboard, "Failed to insert booking.", "Error", JOptionPane.ERROR_MESSAGE);
                     }

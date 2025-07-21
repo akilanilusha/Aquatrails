@@ -3,6 +3,7 @@ package GUI.components.guider;
 import DAO.GuiderDAO;
 import Entity.Guider;
 import DatabaseModel.DatabaseConnection;
+import GUI.Dashboard;
 import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
@@ -182,6 +183,7 @@ public class GuiderCardRow extends JPanel {
                     activeStatusLabel.setForeground(newStatus ? Color.GREEN.darker() : Color.RED);
                     this.dateOfBirth = newDob;
                     JOptionPane.showMessageDialog(this, "Guider updated successfully!");
+                    new Dashboard().loadLableValues();
                 } else {
                     JOptionPane.showMessageDialog(this, "Failed to update guider.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -211,6 +213,7 @@ public class GuiderCardRow extends JPanel {
                     parent.repaint();
                 }
                 JOptionPane.showMessageDialog(this, "Guider deleted successfully.");
+
             } else {
                 JOptionPane.showMessageDialog(this, "Failed to delete guider.", "Error", JOptionPane.ERROR_MESSAGE);
             }

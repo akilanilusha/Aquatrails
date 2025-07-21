@@ -4,6 +4,7 @@ import Entity.Booking;
 import DAO.BookingDAO;
 import com.toedter.calendar.JDateChooser;
 import DatabaseModel.LoadPackage;
+import GUI.Dashboard;
 
 import javax.swing.*;
 import java.awt.*;
@@ -104,9 +105,9 @@ public class BookingCardRow extends JPanel {
 
         // Listen to changes
         packageComboBox.addActionListener(e -> updatePrice.run());
-        memberField.getDocument().addDocumentListener(new SimpleDocumentListener(updatePrice) {
+        memberField.getDocument().addDocumentListener(new DocumentListner(updatePrice) {
         });
-        discountField.getDocument().addDocumentListener(new SimpleDocumentListener(updatePrice) {
+        discountField.getDocument().addDocumentListener(new DocumentListner(updatePrice) {
         });
 
         // Panel setup
@@ -188,6 +189,7 @@ public class BookingCardRow extends JPanel {
                     parent.revalidate();
                     parent.repaint();
                 }
+
             } else {
                 JOptionPane.showMessageDialog(this, "Failed to delete booking.", "Error", JOptionPane.ERROR_MESSAGE);
             }

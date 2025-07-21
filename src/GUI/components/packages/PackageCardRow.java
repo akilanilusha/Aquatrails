@@ -2,6 +2,7 @@ package GUI.components.packages;
 
 import DAO.PackageDAO;
 import Entity.Package;
+import GUI.Dashboard;
 
 import javax.swing.*;
 import java.awt.*;
@@ -104,6 +105,7 @@ public class PackageCardRow extends JPanel {
                     updateStatusLabelColor(newStatus);
 
                     JOptionPane.showMessageDialog(this, "Package updated successfully!");
+
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(this, "Invalid price format!", "Error", JOptionPane.ERROR_MESSAGE);
                 }

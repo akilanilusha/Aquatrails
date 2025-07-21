@@ -115,7 +115,7 @@ public final class Dashboard extends javax.swing.JFrame {
         loadUserDetails();
     }
 
-    private void loadLableValues() {
+    public void loadLableValues() {
 
         String bookingquery = "SELECT COUNT(*) AS count FROM booking WHERE visit_date = CURDATE()";
         ResultSet rsb = DatabaseConnection.searchData(bookingquery);
@@ -1307,6 +1307,7 @@ public final class Dashboard extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         cardLayout.show(jPanel6, "dashboard");
+        loadLableValues();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
