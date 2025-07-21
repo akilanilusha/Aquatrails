@@ -1,5 +1,6 @@
 package GUI.components.guider;
 
+import DAO.BookingDAO;
 import GUI.Dashboard;
 import DAO.GuiderDAO;
 import Entity.Guider;
@@ -18,6 +19,10 @@ import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
 
+/**
+ *
+ * @author hp
+ */
 public class AddGuiderButton {
 
     public static void showGuiderDialog(Dashboard dashboard) {
@@ -109,8 +114,9 @@ public class AddGuiderButton {
                     String dob = sdf.format(selectedDate);
 
                     Guider guider = new Guider(name, dob, location, packageName, isActive, imageBase64[0]);
-
-                    boolean success = GuiderDAO.insertGuider(guider);
+                    
+                    GuiderDAO dao = GuiderDAO.getInstance();
+                    boolean success = dao.insert(guider);
 
                     if (success) {
                         JOptionPane.showMessageDialog(dashboard, "Guider added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);

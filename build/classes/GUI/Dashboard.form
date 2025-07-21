@@ -635,7 +635,7 @@
                     <Container class="javax.swing.JPanel" name="jPanel10">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="75" green="c4" red="0" type="rgb"/>
+                          <Color blue="0" green="9e" red="27" type="rgb"/>
                         </Property>
                       </Properties>
                       <Constraints>
@@ -705,7 +705,7 @@
                     <Container class="javax.swing.JPanel" name="jPanel11">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="ff" green="33" red="0" type="rgb"/>
+                          <Color blue="85" green="2d" red="16" type="rgb"/>
                         </Property>
                       </Properties>
                       <Constraints>
@@ -772,7 +772,7 @@
                     <Container class="javax.swing.JPanel" name="jPanel12">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="f1" green="f" red="d5" type="rgb"/>
+                          <Color blue="0" green="0" red="a9" type="rgb"/>
                         </Property>
                       </Properties>
                       <Constraints>

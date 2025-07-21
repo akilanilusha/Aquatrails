@@ -1,6 +1,7 @@
 package GUI.components.user;
 
-import DatabaseModel.DatabaseConnection;
+import DAO.UserDAO;
+import Entity.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,9 +54,10 @@ public class UserCardRow extends JPanel {
         add(updateButton);
         add(deleteButton);
 
+        // ===== Update Button Logic =====
         updateButton.addActionListener(e -> {
             JTextField usernameField = new JTextField(usernameLabel.getText());
-            JPasswordField passwordField = new JPasswordField(); // Empty default
+            JPasswordField passwordField = new JPasswordField(); // Empty by default
             JTextField nicField = new JTextField(nicLabel.getText());
             JTextField emailField = new JTextField(emailLabel.getText());
             JComboBox<String> roleCombo = new JComboBox<>(new String[]{
@@ -94,63 +96,57 @@ public class UserCardRow extends JPanel {
                 String newRole = (String) roleCombo.getSelectedItem();
                 String newStatus = (String) statusCombo.getSelectedItem();
 
-                String updateQuery;
-                if (!newPassword.isEmpty()) {
-                    updateQuery = "UPDATE user SET "
-                            + "username = '" + newUsername + "', "
-                            + "password = '" + newPassword + "', "
-                            + "nic = '" + newNIC + "', "
-                            + "email = '" + newEmail + "', "
-                            + "user_role = '" + newRole + "', "
-                            + "status = '" + newStatus + "' "
-                            + "WHERE user_id = " + userId;
+                // If password field is blank, use existing password
+                String finalPassword = newPassword.isEmpty()
+                        ? UserDAO.getInstance().getById(userId).getPassword()
+                        : newPassword;
+
+                User updatedUser = new User(userId, newUsername, finalPassword, newNIC, newEmail, newRole, newStatus);
+                boolean success = UserDAO.getInstance().update(updatedUser);
+
+                if (success) {
+                    usernameLabel.setText(newUsername);
+                    nicLabel.setText(newNIC);
+                    emailLabel.setText(newEmail);
+                    roleLabel.setText(newRole);
+                    statusLabel.setText(newStatus);
+                    updateStatusLabelColor(newStatus);
+
+                    JOptionPane.showMessageDialog(this, "User updated successfully!");
                 } else {
-                    updateQuery = "UPDATE user SET "
-                            + "username = '" + newUsername + "', "
-                            + "nic = '" + newNIC + "', "
-                            + "email = '" + newEmail + "', "
-                            + "user_role = '" + newRole + "', "
-                            + "status = '" + newStatus + "' "
-                            + "WHERE user_id = " + userId;
+                    JOptionPane.showMessageDialog(this, "Failed to update user.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-
-                DatabaseConnection.updateData(updateQuery);
-
-                usernameLabel.setText(newUsername);
-                nicLabel.setText(newNIC);
-                emailLabel.setText(newEmail);
-                roleLabel.setText(newRole);
-                statusLabel.setText(newStatus);
-                updateStatusLabelColor(newStatus);
-
-                JOptionPane.showMessageDialog(this, "User updated successfully!");
             }
         });
 
+        // ===== Delete Button Logic =====
         deleteButton.addActionListener(e -> {
             int confirm = JOptionPane.showOptionDialog(
                     this,
                     "Delete User ID: " + userId + "?",
                     "Confirm Delete",
-                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
                     null,
-                    new Object[]{"Yes", "Cancel"}, 
+                    new Object[]{"Yes", "Cancel"},
                     "Cancel"
             );
 
             if (confirm == JOptionPane.YES_OPTION) {
-                String deleteQuery = "DELETE FROM user WHERE user_id = " + userId;
-                DatabaseConnection.deleteData(deleteQuery);
+                boolean success = UserDAO.getInstance().delete(userId);
 
-                Container parent = this.getParent();
-                if (parent != null) {
-                    parent.remove(this);
-                    parent.revalidate();
-                    parent.repaint();
+                if (success) {
+                    Container parent = this.getParent();
+                    if (parent != null) {
+                        parent.remove(this);
+                        parent.revalidate();
+                        parent.repaint();
+                    }
+
+                    JOptionPane.showMessageDialog(this, "User deleted successfully.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to delete user.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-
-                JOptionPane.showMessageDialog(this, "User deleted successfully.");
             }
         });
     }

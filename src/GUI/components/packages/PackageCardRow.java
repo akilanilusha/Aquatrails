@@ -8,7 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * @author akilanilusha
+ *
+ * @author kesha
  */
 public class PackageCardRow extends JPanel {
 
@@ -93,7 +94,7 @@ public class PackageCardRow extends JPanel {
                     String newStatus = (String) statusComboBox.getSelectedItem();
 
                     Package updatedPkg = new Package(pkg.getPackageId(), newCode, newName, newDesc, newLocation, newPrice, newStatus);
-                    PackageDAO.updatePackage(updatedPkg);
+                   PackageDAO.getInstance().update(updatedPkg);
 
                     // UI Updates
                     packageCodeLabel.setText(newCode);
@@ -121,7 +122,7 @@ public class PackageCardRow extends JPanel {
             );
 
             if (confirm == JOptionPane.YES_OPTION) {
-                PackageDAO.deletePackage(pkg.getPackageId());
+               PackageDAO.getInstance().delete(pkg.getPackageId());
 
                 Container parent = this.getParent();
                 if (parent != null) {

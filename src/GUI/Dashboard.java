@@ -801,7 +801,7 @@ public final class Dashboard extends javax.swing.JFrame {
         avilableguide.setText("44");
         TodayBookings.add(avilableguide, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 50, -1, -1));
 
-        jPanel10.setBackground(new java.awt.Color(0, 196, 117));
+        jPanel10.setBackground(new java.awt.Color(39, 158, 0));
 
         jLabel4.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
@@ -846,7 +846,7 @@ public final class Dashboard extends javax.swing.JFrame {
 
         TodayBookings.add(jPanel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 210, 110));
 
-        jPanel11.setBackground(new java.awt.Color(0, 51, 255));
+        jPanel11.setBackground(new java.awt.Color(22, 45, 133));
 
         jLabel11.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(255, 255, 255));
@@ -882,7 +882,7 @@ public final class Dashboard extends javax.swing.JFrame {
 
         TodayBookings.add(jPanel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 0, 230, 110));
 
-        jPanel12.setBackground(new java.awt.Color(213, 15, 241));
+        jPanel12.setBackground(new java.awt.Color(169, 0, 0));
 
         javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
         jPanel12.setLayout(jPanel12Layout);

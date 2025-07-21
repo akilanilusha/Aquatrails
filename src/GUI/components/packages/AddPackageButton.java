@@ -1,11 +1,17 @@
 package GUI.components.packages;
 
+import DAO.GuiderDAO;
 import DAO.PackageDAO;
 import Entity.Package;
 import GUI.Dashboard;
 
 import javax.swing.*;
 import java.awt.*;
+
+/**
+ *
+ * @author kesha
+ */
 
 public class AddPackageButton {
 
@@ -19,7 +25,7 @@ public class AddPackageButton {
         JTextField locationField = new JTextField();
         JTextField priceField = new JTextField();
 
-        String[] statuses = {"Active", "Pending", "Closed"};
+        String[] statuses = {"Active", "Pending"};
         JComboBox<String> statusComboBox = new JComboBox<>(statuses);
 
         JPanel panel = new JPanel(new GridLayout(6, 2, 5, 5));
@@ -65,7 +71,7 @@ public class AddPackageButton {
                             code, name, description, location, price, status
                     );
 
-                    PackageDAO.insertPackage(newPackage);
+                    PackageDAO.getInstance().insert(newPackage);
                     JOptionPane.showMessageDialog(dashboard, "Package added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                     dashboard.loadPackageCards();
 

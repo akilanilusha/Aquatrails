@@ -13,6 +13,10 @@ import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ *
+ * @author hp
+ */
 public class GuiderCardRow extends JPanel {
 
     private JLabel nameLabel;
@@ -172,7 +176,8 @@ public class GuiderCardRow extends JPanel {
                 boolean newStatus = activeBox.isSelected();
 
                 Guider updatedGuider = new Guider(guiderId, newName, newDob, newLocation, newPackage, newStatus, imageBase64);
-                boolean updated = GuiderDAO.updateGuider(updatedGuider);
+                
+                boolean updated = GuiderDAO.getInstance().update(updatedGuider);
 
                 if (updated) {
                     nameLabel.setText(newName);
@@ -203,7 +208,7 @@ public class GuiderCardRow extends JPanel {
         );
 
         if (confirm == JOptionPane.YES_OPTION) {
-            boolean deleted = GuiderDAO.deleteGuiderById(guiderId);
+            boolean deleted = GuiderDAO.getInstance().delete(guiderId);
             if (deleted) {
                 Container parent = this.getParent();
                 if (parent != null) {

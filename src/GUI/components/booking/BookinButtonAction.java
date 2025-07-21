@@ -16,6 +16,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+/**
+ *
+ * @author malindu
+ */
+
 public class BookinButtonAction {
 
     public static void showBookingDialog(Dashboard dashboard) {
@@ -111,7 +116,10 @@ public class BookinButtonAction {
                 try {
                     double price = Double.parseDouble(priceText);
                     Booking booking = new Booking(selectedDate, visitorName, visitorId, selectedPackage, price, status);
-                    boolean success = BookingDAO.insertBooking(booking);
+                    
+                    BookingDAO dao = BookingDAO.getInstance();
+
+                    boolean success = dao.insert(booking);
 
                     if (success) {
                         JOptionPane.showMessageDialog(dashboard, "Booking successful!", "Success", JOptionPane.INFORMATION_MESSAGE);

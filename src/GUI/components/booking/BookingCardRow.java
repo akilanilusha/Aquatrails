@@ -11,8 +11,14 @@ import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Map;
 
+/**
+ *
+ * @author malindu
+ */
+
 public class BookingCardRow extends JPanel {
 
+    
     private JLabel visitorNameLabel;
     private JLabel packageNameLabel;
     private JLabel priceLabel;
@@ -20,6 +26,9 @@ public class BookingCardRow extends JPanel {
     private JLabel bookingDateLabel;
     private JButton updateButton;
     private JButton deleteButton;
+    
+    BookingDAO dao = BookingDAO.getInstance();
+
 
     public BookingCardRow(int bookingId, String visitorName, String packageName, double price, String status, String bookingDate) {
         setLayout(new GridLayout(1, 7, 10, 0));
@@ -35,7 +44,7 @@ public class BookingCardRow extends JPanel {
 
         visitorNameLabel = createCenteredLabel(visitorName, labelFont);
         packageNameLabel = createCenteredLabel(packageName, labelFont);
-        priceLabel = createCenteredLabel("$" + price, labelFont);
+        priceLabel = createCenteredLabel("Rs" + price, labelFont);
         statusLabel = createCenteredLabel(status, labelFont);
         bookingDateLabel = createCenteredLabel(bookingDate, labelFont);
 
@@ -105,7 +114,7 @@ public class BookingCardRow extends JPanel {
 
         // Listen to changes
         packageComboBox.addActionListener(e -> updatePrice.run());
-        memberField.getDocument().addDocumentListener(new DocumentListner(updatePrice) {
+        memberField.getDocument().addDocumentListener(new DocumentListner(updatePrice) { //abstract
         });
         discountField.getDocument().addDocumentListener(new DocumentListner(updatePrice) {
         });
@@ -153,7 +162,7 @@ public class BookingCardRow extends JPanel {
                 updatedBooking.setBookingId(bookingId);
                 updatedBooking.setVisitDate(selectedDate);
 
-                if (BookingDAO.updateBooking(updatedBooking)) {
+                if (dao.update(updatedBooking)) {
                     visitorNameLabel.setText(newName);
                     packageNameLabel.setText(newPackage);
                     priceLabel.setText("$" + newPrice);
@@ -181,7 +190,7 @@ public class BookingCardRow extends JPanel {
         );
 
         if (confirm == JOptionPane.YES_OPTION) {
-            if (BookingDAO.deleteBooking(bookingId)) {
+            if (dao.delete(bookingId)) {
                 JOptionPane.showMessageDialog(this, "Booking ID: " + bookingId + " deleted.");
                 Container parent = this.getParent();
                 if (parent != null) {

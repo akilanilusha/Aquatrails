@@ -1,6 +1,5 @@
 package DAO;
 
-import Entity.Guider;
 import DatabaseModel.DatabaseConnection;
 import Entity.Guider;
 
@@ -8,12 +7,28 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiderDAO {
+/**
+ *
+ * @author hp
+ */
+public class GuiderDAO extends CommonDAO<Guider> {
 
-    public static boolean insertGuider(Guider guider) {
+    private static GuiderDAO instance;
+
+    private GuiderDAO() {
+    }
+
+    public static synchronized GuiderDAO getInstance() {
+        if (instance == null) {
+            instance = new GuiderDAO();
+        }
+        return instance;
+    }
+
+    @Override
+    public boolean insert(Guider guider) {
         String sql = "INSERT INTO guider (name, date_of_birth, location, package_name, is_active, image_base64) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, guider.getName());
             ps.setString(2, guider.getDateOfBirth());
             ps.setString(3, guider.getLocation());
@@ -28,12 +43,11 @@ public class GuiderDAO {
         }
     }
 
-    public static List<Guider> getAllGuiders() {
+    @Override
+    public List<Guider> getAll() {
         List<Guider> list = new ArrayList<>();
         String sql = "SELECT * FROM guider";
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 Guider guider = new Guider(
@@ -54,10 +68,10 @@ public class GuiderDAO {
         return list;
     }
 
-    public static boolean deleteGuiderById(int id) {
+    @Override
+    public boolean delete(int id) {
         String sql = "DELETE FROM guider WHERE guider_id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -66,10 +80,10 @@ public class GuiderDAO {
         }
     }
 
-    public static boolean updateGuider(Guider guider) {
+    @Override
+    public boolean update(Guider guider) {
         String sql = "UPDATE guider SET name=?, date_of_birth=?, location=?, package_name=?, is_active=?, image_base64=? WHERE guider_id=?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, guider.getName());
             ps.setString(2, guider.getDateOfBirth());
@@ -86,10 +100,10 @@ public class GuiderDAO {
         }
     }
 
-    public static Guider getGuiderById(int id) {
+    @Override
+    public Guider getById(int id) {
         String sql = "SELECT * FROM guider WHERE guider_id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();

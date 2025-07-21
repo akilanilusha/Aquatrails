@@ -17,7 +17,6 @@ public class User {
     private String role;
     private String status;
 
-    // Constructors
     public User() {}
 
     public User(int userId, String username, String password, String nic, String email, String role, String status) {

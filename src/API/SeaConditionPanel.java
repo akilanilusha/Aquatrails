@@ -20,9 +20,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ * @author akilanilusha
+ */
+
 public class SeaConditionPanel extends JPanel {
 
-private static final String API_KEY = "3631d5c4-1966-11f0-a906-0242ac130003-3631d61e-1966-11f0-a906-0242ac130003";
+private static final String API_KEY = "3631d5c4-1966-11f0-a906-0242ac130003-3631d61e-1966-11f0-a906-0242ac130003111";
     private static final String API_URL = "https://api.stormglass.io/v2/weather/point?lat=58.7984&lng=17.8081&params=waveHeight,waterTemperature";
 
     public SeaConditionPanel() {
@@ -71,7 +76,7 @@ private static final String API_KEY = "3631d5c4-1966-11f0-a906-0242ac130003-3631
 
         } catch (Exception e) {
             e.printStackTrace();
-            add(new JLabel("❌ Failed to load sea condition data."));
+            add(new JLabel("Failed to load sea condition data."));
         }
     }
 

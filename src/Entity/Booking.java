@@ -1,9 +1,11 @@
 package Entity;
 
-
 import java.util.Date;
 
-
+/**
+ *
+ * @author malindu
+ */
 public class Booking {
     private int bookingId;
     private Date visitDate;

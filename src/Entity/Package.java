@@ -1,6 +1,9 @@
 package Entity;
 
-
+/**
+ *
+ * @author kesha
+ */
 public class Package {
     private int packageId;
     private String packageCode;

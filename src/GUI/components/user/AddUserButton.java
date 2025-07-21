@@ -1,32 +1,21 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package GUI.components.user;
 
+import DAO.BookingDAO;
+import DAO.UserDAO;
+import Entity.User;
 import GUI.Dashboard;
+
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import javax.swing.BorderFactory;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import DatabaseModel.DatabaseConnection;
 
-/**
- *
- * @author akilanilusha
- */
+import javax.swing.*;
+
 public class AddUserButton {
 
     public static void showUserDialog(Dashboard dashboard) {
         Font inputFont = new Font("SansSerif", Font.PLAIN, 16);
-        Dimension fieldSize = new Dimension(250, 40); // Taller fields
+        Dimension fieldSize = new Dimension(250, 40);
 
         JTextField usernameField = new JTextField();
         usernameField.setPreferredSize(fieldSize);
@@ -93,26 +82,19 @@ public class AddUserButton {
             if (username.isEmpty() || password.isEmpty() || nic.isEmpty() || email.isEmpty()) {
                 JOptionPane.showMessageDialog(dashboard, "Please fill all required fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
             } else {
-                try {
-                    String insertQuery = "INSERT INTO user (username, password, user_role, nic, email, status) VALUES ('"
-                            + username + "', '"
-                            + password + "', '"
-                            + role + "', '"
-                            + nic + "', '"
-                            + email + "', '"
-                            + status + "')";
+                // Create User object
+                User newUser = new User(username, password, nic, email, role, status);
 
-                    DatabaseConnection.insertData(insertQuery);
+                // Use UserDAO to insert the user                            
+                boolean success = UserDAO.getInstance().insert(newUser);
+
+                if (success) {
                     JOptionPane.showMessageDialog(dashboard, "User added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                     dashboard.loadUserCards();
-
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                } else {
                     JOptionPane.showMessageDialog(dashboard, "Error saving user.", "Database Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
-
     }
-
 }
