@@ -5,13 +5,10 @@
 package GUI;
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
-import java.awt.Image;
 import javax.swing.JOptionPane;
-import model.DatabaseConnection;
+import DatabaseModel.DatabaseConnection;
 import java.sql.*;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
+
 import javax.swing.UIManager;
 
 /**
@@ -187,18 +184,15 @@ public class LoginUser extends javax.swing.JFrame {
     private void loginUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginUserActionPerformed
         // TODO add your handling code here:
 
-        // Get input values
         String username = this.username.getText();
         String password = new String(this.password.getPassword());
         String userRole = this.userRole.getSelectedItem().toString();
 
-        // Validate input
         if (username.isEmpty() || password.isEmpty() || userRole.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please fill all the fields!", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // SQL to verify credentials and ensure user is active
         String query = "SELECT * FROM user WHERE username = ? AND password = ? AND user_role = ? AND status = 'Active'";
 
         try {
@@ -209,12 +203,12 @@ public class LoginUser extends javax.swing.JFrame {
             ps.setString(3, userRole);
 
             ResultSet rs = ps.executeQuery();
-
+            
             if (rs.next()) {
-                // Credentials and status match
+                System.out.println(rs.getInt("user_id"));
                 JOptionPane.showMessageDialog(this, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 dispose();
-                new Dashboard().setVisible(true);
+                new Dashboard(rs.getInt("user_id")).setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid credentials or account not active!", "Login Failed", JOptionPane.ERROR_MESSAGE);
             }

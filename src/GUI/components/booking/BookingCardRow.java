@@ -1,22 +1,37 @@
 package GUI.components.booking;
 
-import model.Package;
+import Entity.Booking;
+import DAO.BookingDAO;
+import com.toedter.calendar.JDateChooser;
+import DatabaseModel.LoadPackage;
+import GUI.Dashboard;
+
 import javax.swing.*;
 import java.awt.*;
-import model.DatabaseConnection;
+import java.text.SimpleDateFormat;
+import java.util.Map;
+
+/**
+ *
+ * @author malindu
+ */
 
 public class BookingCardRow extends JPanel {
 
-    private JLabel bookingIdLabel;
+    
     private JLabel visitorNameLabel;
     private JLabel packageNameLabel;
     private JLabel priceLabel;
-    private JLabel statusLabel;  // Added label for status
+    private JLabel statusLabel;
+    private JLabel bookingDateLabel;
     private JButton updateButton;
     private JButton deleteButton;
+    
+    BookingDAO dao = BookingDAO.getInstance();
 
-    public BookingCardRow(int bookingId, String visitorName, String packageName, double price, String status) {
-        setLayout(new GridLayout(1, 7, 10, 0)); // Adjusted for 7 columns (including status)
+
+    public BookingCardRow(int bookingId, String visitorName, String packageName, double price, String status, String bookingDate) {
+        setLayout(new GridLayout(1, 7, 10, 0));
         setPreferredSize(new Dimension(700, 50));
         setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
         setBackground(new Color(245, 245, 245));
@@ -27,117 +42,167 @@ public class BookingCardRow extends JPanel {
 
         Font labelFont = new Font("Segoe UI", Font.PLAIN, 14);
 
-        // Create columns
-        bookingIdLabel = createCenteredLabel("ID: " + bookingId, labelFont);
         visitorNameLabel = createCenteredLabel(visitorName, labelFont);
         packageNameLabel = createCenteredLabel(packageName, labelFont);
-        priceLabel = createCenteredLabel("$" + price, labelFont);
-        statusLabel = createCenteredLabel(status, labelFont); // Display status
+        priceLabel = createCenteredLabel("Rs" + price, labelFont);
+        statusLabel = createCenteredLabel(status, labelFont);
+        bookingDateLabel = createCenteredLabel(bookingDate, labelFont);
 
         updateButton = createStyledButton("Update", new Color(76, 175, 80));
         deleteButton = createStyledButton("Delete", new Color(244, 67, 54));
 
-        // Add to panel
-        add(bookingIdLabel);
         add(visitorNameLabel);
         add(packageNameLabel);
+        add(bookingDateLabel);
         add(priceLabel);
-        add(statusLabel); // Add status label to row
+        add(statusLabel);
         add(updateButton);
         add(deleteButton);
 
-        updateButton.addActionListener(e -> {
-            JTextField nameField = new JTextField(visitorNameLabel.getText());
-            JTextField priceField = new JTextField(priceLabel.getText().replace("$", ""));
+        updateStatusLabelColor(status);
 
-            // Example package options - you can replace with dynamic options
-            JComboBox<String> packageComboBox = new JComboBox<>();
-            packageComboBox.setSelectedItem(packageNameLabel.getText());
-            new Package().fetchPackagesFromDatabase(packageComboBox);
+        updateButton.addActionListener(e -> openUpdateDialog(bookingId));
+        deleteButton.addActionListener(e -> deleteBooking(bookingId));
+    }
 
-            // Status options
-            JComboBox<String> statusComboBox = new JComboBox<>(new String[]{"confirmed", "cancelled", "ongoing"});
-            statusComboBox.setSelectedItem(statusLabel.getText());
+    private void openUpdateDialog(int bookingId) {
+        JTextField nameField = new JTextField(visitorNameLabel.getText());
+        JComboBox<String> packageComboBox = new JComboBox<>();
+        new LoadPackage().fetchPackagesFromDatabase(packageComboBox);
+        packageComboBox.setSelectedItem(packageNameLabel.getText());
 
-            // Styling
-            Dimension inputSize = new Dimension(250, 30);
-            nameField.setPreferredSize(inputSize);
-            priceField.setPreferredSize(inputSize);
-            packageComboBox.setPreferredSize(inputSize);
-            statusComboBox.setPreferredSize(inputSize);
+        JTextField memberField = new JTextField("1");
+        JTextField discountField = new JTextField("0");
+        JTextField priceField = new JTextField();
+        priceField.setEditable(false);
 
-            Font modernFont = new Font("Segoe UI", Font.PLAIN, 16);
-            nameField.setFont(modernFont);
-            priceField.setFont(modernFont);
-            packageComboBox.setFont(modernFont);
-            statusComboBox.setFont(modernFont);
+        JComboBox<String> statusComboBox = new JComboBox<>(new String[]{"confirmed", "cancelled", "pending", "complete"});
+        statusComboBox.setSelectedItem(statusLabel.getText());
 
-            nameField.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
-            priceField.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
-            packageComboBox.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
-            statusComboBox.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
+        JDateChooser dateChooser = new JDateChooser();
+        dateChooser.setDateFormatString("yyyy-MM-dd");
 
-            JPanel updatePanel = new JPanel(new GridLayout(4, 2, 15, 15)); // Adjusted for 4 fields (including status)
-            updatePanel.setPreferredSize(new Dimension(500, 250));
-            updatePanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        try {
+            java.util.Date parsedDate = new SimpleDateFormat("yyyy-MM-dd").parse(bookingDateLabel.getText());
+            dateChooser.setDate(parsedDate);
+        } catch (Exception ex) {
+            dateChooser.setDate(new java.util.Date());
+        }
 
-            updatePanel.add(new JLabel("Visitor Name:"));
-            updatePanel.add(nameField);
-            updatePanel.add(new JLabel("Package Name:"));
-            updatePanel.add(packageComboBox);
-            updatePanel.add(new JLabel("Price:"));
-            updatePanel.add(priceField);
-            updatePanel.add(new JLabel("Status:"));
-            updatePanel.add(statusComboBox);
+        // Get package price map
+        Map<String, Double> packagePrices = LoadPackage.getPackagePriceMap();
 
-            int result = JOptionPane.showConfirmDialog(this, updatePanel,
-                    "Update Booking ID: " + bookingId, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        // Auto price update logic
+        Runnable updatePrice = () -> {
+            try {
+                String selectedPackage = (String) packageComboBox.getSelectedItem();
+                int members = Integer.parseInt(memberField.getText().trim());
+                double discount = Double.parseDouble(discountField.getText().trim());
 
-            if (result == JOptionPane.OK_OPTION) {
-                String newName = nameField.getText();
+                double basePrice = packagePrices.getOrDefault(selectedPackage, 0.0);
+                double totalPrice = basePrice * members;
+
+                if (discount > 0 && discount <= 100) {
+                    totalPrice -= totalPrice * (discount / 100.0);
+                }
+
+                priceField.setText(String.format("%.2f", totalPrice));
+            } catch (NumberFormatException ex) {
+                priceField.setText("Invalid input");
+            }
+        };
+
+        // Listen to changes
+        packageComboBox.addActionListener(e -> updatePrice.run());
+        memberField.getDocument().addDocumentListener(new DocumentListner(updatePrice) { //abstract
+        });
+        discountField.getDocument().addDocumentListener(new DocumentListner(updatePrice) {
+        });
+
+        // Panel setup
+        JPanel updatePanel = new JPanel(new GridLayout(7, 2, 15, 10));
+        updatePanel.setPreferredSize(new Dimension(500, 350));
+        updatePanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        updatePanel.add(new JLabel("Visitor Name:"));
+        updatePanel.add(nameField);
+        updatePanel.add(new JLabel("Package Name:"));
+        updatePanel.add(packageComboBox);
+        updatePanel.add(new JLabel("No. of Members:"));
+        updatePanel.add(memberField);
+        updatePanel.add(new JLabel("Discount (%):"));
+        updatePanel.add(discountField);
+        updatePanel.add(new JLabel("Booking Date:"));
+        updatePanel.add(dateChooser);
+        updatePanel.add(new JLabel("Total Price:"));
+        updatePanel.add(priceField);
+        updatePanel.add(new JLabel("Status:"));
+        updatePanel.add(statusComboBox);
+
+        updatePrice.run(); // initialize with calculated value
+
+        int result = JOptionPane.showConfirmDialog(this, updatePanel,
+                "Update Booking ID: " + bookingId, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            try {
+                String newName = nameField.getText().trim();
                 String newPackage = (String) packageComboBox.getSelectedItem();
-                String newPriceText = priceField.getText();
+                double newPrice = Double.parseDouble(priceField.getText().trim());
                 String newStatus = (String) statusComboBox.getSelectedItem();
+                java.util.Date selectedDate = dateChooser.getDate();
 
-                try {
-                    double newPrice = Double.parseDouble(newPriceText);
+                if (selectedDate == null) {
+                    JOptionPane.showMessageDialog(this, "Please select a valid date.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
-                    String updateQuery = "UPDATE booking SET visitor_name = '" + newName
-                            + "', package_name = '" + newPackage
-                            + "', price = " + newPrice
-                            + ", status = '" + newStatus
-                            + "' WHERE booking_id = " + bookingId;
+                // Create updated booking
+                Booking updatedBooking = new Booking(selectedDate, newName, "N/A", newPackage, newPrice, newStatus);
+                updatedBooking.setBookingId(bookingId);
+                updatedBooking.setVisitDate(selectedDate);
 
-                    DatabaseConnection.updateData(updateQuery);
-
-                    // Update labels
+                if (dao.update(updatedBooking)) {
                     visitorNameLabel.setText(newName);
                     packageNameLabel.setText(newPackage);
                     priceLabel.setText("$" + newPrice);
-                    statusLabel.setText(newStatus); // Update status label
+                    statusLabel.setText(newStatus);
+                    bookingDateLabel.setText(new SimpleDateFormat("yyyy-MM-dd").format(selectedDate));
+                    updateStatusLabelColor(newStatus);
 
                     JOptionPane.showMessageDialog(this, "Booking updated successfully!");
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "Invalid price!", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to update booking.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid number format!", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        });
+        }
+    }
 
-        deleteButton.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(this, "Delete Booking ID: " + bookingId + "?");
-            if (confirm == JOptionPane.YES_OPTION) {
+    private void deleteBooking(int bookingId) {
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to delete Booking ID: " + bookingId + "?",
+                "Confirm Deletion",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (dao.delete(bookingId)) {
                 JOptionPane.showMessageDialog(this, "Booking ID: " + bookingId + " deleted.");
-                String deleteQuery = "DELETE FROM booking WHERE booking_id = " + bookingId;
-                DatabaseConnection.deleteData(deleteQuery);
-
                 Container parent = this.getParent();
                 if (parent != null) {
                     parent.remove(this);
                     parent.revalidate();
                     parent.repaint();
                 }
+
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to delete booking.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        });
+        }
     }
 
     private JLabel createCenteredLabel(String text, Font font) {
@@ -153,4 +218,32 @@ public class BookingCardRow extends JPanel {
         button.setFocusPainted(false);
         return button;
     }
+
+    //chnge lble color
+    private void updateStatusLabelColor(String status) {
+        switch (status) {
+            case "confirmed" -> {
+                statusLabel.setBackground(new Color(76, 175, 80)); // Green
+                statusLabel.setForeground(Color.WHITE);
+            }
+            case "pending" -> {
+                statusLabel.setBackground(new Color(255, 193, 7)); // Amber
+                statusLabel.setForeground(Color.BLACK);
+            }
+            case "complete" -> {
+                statusLabel.setBackground(new Color(33, 150, 243)); // Blue
+                statusLabel.setForeground(Color.WHITE);
+            }
+            case "cancelled" -> {
+                statusLabel.setBackground(new Color(244, 67, 54)); // Red
+                statusLabel.setForeground(Color.WHITE);
+            }
+            default -> {
+                statusLabel.setBackground(null);
+                statusLabel.setForeground(Color.BLACK);
+            }
+        }
+        statusLabel.setOpaque(true);
+    }
+
 }

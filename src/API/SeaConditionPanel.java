@@ -1,13 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package API;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.LineAndShapeRenderer;
+import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import javax.swing.*;
@@ -25,20 +26,20 @@ import java.util.List;
  */
 public class SeaConditionPanel extends JPanel {
 
-    private static final String API_KEY = "STROMGLASS_API_KEY";
+    private static final String API_KEY = "3631d5c4-1966-11f0-a906-0242ac130003-3631d61e-1966-11f0-a906-0242ac130003111";
+
     private static final String API_URL = "https://api.stormglass.io/v2/weather/point?lat=58.7984&lng=17.8081&params=waveHeight,waterTemperature";
 
     public SeaConditionPanel() {
-        setLayout(new GridLayout(2, 1));
+        setLayout(new GridLayout(2, 1, 10, 10)); // Two rows, spacing
+        setBackground(new Color(245, 245, 245)); // Light background
 
         List<String> times = new ArrayList<>();
         List<Double> waveHeights = new ArrayList<>();
         List<Double> waterTemps = new ArrayList<>();
 
         try {
-            // Fetch API data
-            URL url = new URL(API_URL);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            HttpURLConnection conn = (HttpURLConnection) new URL(API_URL).openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Authorization", API_KEY);
 
@@ -56,7 +57,7 @@ public class SeaConditionPanel extends JPanel {
 
             for (int i = 0; i < hours.length(); i++) {
                 JSONObject hourData = hours.getJSONObject(i);
-                String time = hourData.getString("time").substring(11, 16); //  "14:00"
+                String time = hourData.getString("time").substring(11, 16); // HH:mm format
 
                 if (hourData.has("waveHeight") && hourData.has("waterTemperature")) {
                     JSONObject waveHeight = hourData.getJSONObject("waveHeight");
@@ -70,9 +71,8 @@ public class SeaConditionPanel extends JPanel {
                 }
             }
 
-            // Create and add chart panels
-            add(createChartPanel("Wave Height", "Height (m)", "Wave Height (m)", times, waveHeights));
-            add(createChartPanel("Water Temperature", "Temperature (°C)", "Water Temp (°C)", times, waterTemps));
+            add(createModernChartPanel("🌊 Wave Height", "Time", "Height (m)", "Wave Height (m)", times, waveHeights));
+            add(createModernChartPanel("🌡 Water Temperature", "Time", "Temperature (°C)", "Water Temp (°C)", times, waterTemps));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,14 +80,51 @@ public class SeaConditionPanel extends JPanel {
         }
     }
 
-    private ChartPanel createChartPanel(String title, String yAxisLabel, String seriesName, List<String> times, List<Double> values) {
+    private ChartPanel createModernChartPanel(String title, String xLabel, String yLabel,
+            String seriesName, List<String> times, List<Double> values) {
+
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        for (int i = 0; i < times.size(); i++) {
+
+        // Reduce clutter: add every 3rd point
+        for (int i = 0; i < times.size(); i += 3) {
             dataset.addValue(values.get(i), seriesName, times.get(i));
         }
+
         JFreeChart chart = ChartFactory.createLineChart(
-                title, "Time", yAxisLabel, dataset
+                title, xLabel, yLabel, dataset, PlotOrientation.VERTICAL, true, true, false
         );
-        return new ChartPanel(chart);
+
+        // Chart title & background
+        chart.setBackgroundPaint(new Color(245, 245, 245));
+        chart.getTitle().setFont(new Font("SansSerif", Font.BOLD, 18));
+        chart.getLegend().setItemFont(new Font("SansSerif", Font.PLAIN, 12));
+
+        // Plot customization
+        CategoryPlot plot = chart.getCategoryPlot();
+        plot.setBackgroundPaint(Color.WHITE);
+        plot.setRangeGridlinePaint(new Color(180, 180, 180));
+        plot.setDomainGridlinePaint(new Color(220, 220, 220));
+
+        // Renderer - smooth red line
+        LineAndShapeRenderer renderer = new LineAndShapeRenderer(true, true);
+        renderer.setSeriesPaint(0, new Color(255, 80, 80));
+        renderer.setSeriesStroke(0, new BasicStroke(2.0f));
+        plot.setRenderer(renderer);
+
+        // X-axis labels font and rotation
+        plot.getDomainAxis().setTickLabelFont(new Font("SansSerif", Font.PLAIN, 10));
+        plot.getDomainAxis().setCategoryLabelPositions(
+                CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 4) // 45° angle
+        );
+
+        // Y-axis labels
+        plot.getRangeAxis().setTickLabelFont(new Font("SansSerif", Font.PLAIN, 10));
+
+        ChartPanel panel = new ChartPanel(chart);
+        panel.setBackground(new Color(245, 245, 245));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        panel.setPreferredSize(new Dimension(700, 300));
+
+        return panel;
     }
 }

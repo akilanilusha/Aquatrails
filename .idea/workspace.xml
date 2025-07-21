@@ -10,52 +10,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="998b4113-8c5b-4a30-b917-ca21fb29eef5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/AquaTrails_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/components/guiders/GuiderCardRow.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/components/packge/PackageCardRow.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/CreateUser$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/CreateUser$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/CreateUser$3.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/CreateUser$4.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/CreateUser$5.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/CreateUser$6.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/CreateUser.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/CreateUser.form" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/Dashboard$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/Dashboard$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/Dashboard$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/Dashboard$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/Dashboard$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/Dashboard$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/Dashboard$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/Dashboard$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/Dashboard$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/Dashboard$5.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/Dashboard$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/Dashboard$6.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/Dashboard$7.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/Dashboard$7.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/Dashboard$8.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/Dashboard$8.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/Dashboard$9.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/Dashboard$9.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/Dashboard.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/Dashboard.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/Dashboard.form" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/Dashboard.form" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/LoginUser$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/LoginUser$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/LoginUser$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/LoginUser$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/LoginUser$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/LoginUser$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/LoginUser$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/LoginUser$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/LoginUser$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/LoginUser$5.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/LoginUser$6.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/LoginUser.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/LoginUser.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/LoginUser.form" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/LoginUser.form" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/components/BookingCard.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/components/BookingDetailsCardView.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/GUI/components/ButtonEditor.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/model/Package.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/model/Package.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nbproject/private/private.xml" beforeDir="false" afterPath="$PROJECT_DIR$/nbproject/private/private.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/CreateUser.form" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/CreateUser.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Dashboard.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Dashboard.form" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Dashboard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Dashboard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/LoginUser.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/LoginUser.form" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/LoginUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/LoginUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/components/BookingCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/components/booking/BookingCardRow.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/components/BookingDetailsCardView.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/components/ButtonEditor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Package.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Package.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/GUI/components/guiders/GuiderCardRow.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/GUI/components/guiders/GuiderCardRow.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nbproject/private/private.properties" beforeDir="false" afterPath="$PROJECT_DIR$/nbproject/private/private.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nbproject/project.properties" beforeDir="false" afterPath="$PROJECT_DIR$/nbproject/project.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/AquaTrails_jar/AquaTrails_jar.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/AquaTrails_jar/AquaTrails_jar.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/components/guiders/GuiderCardRow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/components/guiders/GuiderCardRow.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,18 +33,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "akila/code",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/akilanilusha/Desktop/desktop app java/AquaTrails",
-    "project.structure.last.edited": "Artifacts",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;akila/code&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/akilanilusha/Desktop/desktop app java/AquaTrails&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
