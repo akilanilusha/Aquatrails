@@ -4,8 +4,8 @@
  */
 package GUI;
 
-import GUI.components.booking.BookinButtonAction;
 import API.SeaConditionPanel;
+import GUI.components.booking.BookinButtonAction;
 import static EnvironMentalVariable.EnvironMentalVariable.Location;
 import static EnvironMentalVariable.EnvironMentalVariable.openWeather_api;
 import GUI.components.booking.BookingCardRow;
@@ -68,6 +68,7 @@ public final class Dashboard extends javax.swing.JFrame {
     private final String apiKey = openWeather_api;
 
     private int userId;
+
 
     public Dashboard() {
         initComponents();

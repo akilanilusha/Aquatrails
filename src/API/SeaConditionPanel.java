@@ -24,10 +24,10 @@ import java.util.List;
  *
  * @author akilanilusha
  */
-
 public class SeaConditionPanel extends JPanel {
 
-private static final String API_KEY = "3631d5c4-1966-11f0-a906-0242ac130003-3631d61e-1966-11f0-a906-0242ac130003111";
+    private static final String API_KEY = "3631d5c4-1966-11f0-a906-0242ac130003-3631d61e-1966-11f0-a906-0242ac130003111";
+
     private static final String API_URL = "https://api.stormglass.io/v2/weather/point?lat=58.7984&lng=17.8081&params=waveHeight,waterTemperature";
 
     public SeaConditionPanel() {
@@ -81,7 +81,7 @@ private static final String API_KEY = "3631d5c4-1966-11f0-a906-0242ac130003-3631
     }
 
     private ChartPanel createModernChartPanel(String title, String xLabel, String yLabel,
-                                              String seriesName, List<String> times, List<Double> values) {
+            String seriesName, List<String> times, List<Double> values) {
 
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
